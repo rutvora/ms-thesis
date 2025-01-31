@@ -1,40 +1,31 @@
-\title{On the Use of the \texttt{ubcdiss} Template}
+\title{Side-Channel Security in Networks: From the Internet to Interconnects}
 %\subtitle{If you want a subtitle}
 
-\author{Johnny Canuck}
-\previousdegree{B. Basket Weaving, University of Illustrious Arts, 1991}
-\previousdegree{M. Silly Walks, Another University, 1994}
+\author{Rut Vora}
+\previousdegree{B. Engineering in Computer Science, BITS-Pilani, 2020}
 
 % What is this dissertation for?
-\degreetitle{Doctor of Philosophy}
+\degreetitle{Master of Science}
 
 \institution{The University of British Columbia}
 \campus{Vancouver}
 
 \faculty{The Faculty of Graduate and Postdoctoral Studies}
-\department{Basket Weaving}
-\submissionmonth{April}
-\submissionyear{2192}
+\department{Computer Science}
+\submissionmonth{March}
+\submissionyear{2025}
 
 % details of your examining committee
-\examiningcommittee{John Smith, Professor, Materials Engineering, \textsc{UBC}}{Supervisor}
-\examiningcommittee{Mary Maker, Professor, Materials Engineering, \textsc{UBC}}%
-    {Supervisory Committee Member}
-\examiningcommittee{Nebulous Name, Position, Department, Institution}{Supervisory Committee Member}
-\examiningcommittee{Magnus Monolith, Position, Other Department, Institution}{Additional Examiner}
-
-% details of your supervisory committee
-\supervisorycommittee{Ira Crater, Professor, Materials Engineering, \textsc{UBC}}%
-    {Supervisory Committee Member}
-\supervisorycommittee{Adeline Long, \textsc{CEO} of Aerial Machine
-    Transportation, Inc.}{Supervisory Committee Member}
+\examiningcommittee{Aastha Mehta, Assistant Professor, Computer Science, \textsc{UBC}}{Supervisor}
+% \examiningcommittee{Mathias L\'{e}cuyer, Assistant Professor, Computer Science, \textsc{UBC}}{Co-Supervisor}
+% \examiningcommittee{Margo Seltzer, Professor, Computer Science, \textsc{UBC}}{Supervisory Committee Member}
 
 %% hyperref package provides support for embedding meta-data in .PDF
 %% files
 \hypersetup{
-  pdftitle={Change this title!  (DRAFT: \today)},
-  pdfauthor={Johnny Canuck},
-  pdfkeywords={Your keywords here}
+  pdftitle={Side-Channel Security in Networks: From the Internet to Interconnects  (DRAFT: \today)},
+  pdfauthor={Rut Vora},
+  pdfkeywords={PCIe, CXL, Side Channels, Networks, Proxy}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,21 +100,14 @@
 
 \acresetall	% reset all acronyms used so far
 
-%    1. Introduction
+% Main Sections
 \include{sections/intro}
+\include{sections/background}
+\include{sections/netshaper}
+\include{sections/interconnect_sc}
+\include{sections/conclusions}
 
-%    2. Main body
-% Generally recommended to put each chapter into a separate file
-%\include{relatedwork}
-%\include{model}
-%\include{impl}
-%\include{discussion}
-%\include{conclusions}
 
-%    3. Notes
-%    4. Footnotes
-
-%    5. Bibliography
 \begin{singlespace}
 \raggedright
 \bibliographystyle{abbrvnat}
