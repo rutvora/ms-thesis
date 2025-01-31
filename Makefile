@@ -1,4 +1,4 @@
-          NAME1 = diss
+          NAME1 = thesis
        PRODUCT1 = $(NAME1).pdf
      TEXSOURCE1 = $(NAME1).tex \
 		    abstract.tex ack.tex glossary.tex intro.tex laysummary.tex \
