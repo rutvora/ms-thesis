@@ -104,6 +104,8 @@
 %%
 \usepackage{checkend}	% better error messages on left-open environments
 \usepackage{graphicx}	% for incorporating external images
+\graphicspath{figures/svg}
+\usepackage{svg}
 
 %% booktabs: provides some special commands for typesetting tables as used
 %% in excellent journals.  Ignore the examples in the Lamport book!
@@ -170,6 +172,7 @@
 \usepackage{url}
 \urlstyle{sf}	% typeset urls in sans-serif
 
+\usepackage{subcaption}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -245,6 +248,8 @@
     allbordercolors={0.8 0.8 0.8},%
     ]{hyperref}
 \fi
+\usepackage{cleveref}
+\usepackage{ragged2e}
 %% The following change how the the back-references text is typeset in a
 %% bibliography when `backref' or `pagebackref' are used
 %%
@@ -315,4 +320,7 @@
 %% Document meta-data: be sure to also change the \hypersetup information
 %%
 
-\input{main}
+% \input{main}
+
+% Use this to generate only one chapter
+\input{main_minimal}

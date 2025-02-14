@@ -1,0 +1,29 @@
+\section{Network Side Channels}
+\label{sec:network-side-channel-background}
+
+Let us first understand how network side-channel attacks are carried out.
+The ultimate goal of the attacker is to determine the contents of the web traffic being transmitted or received by the victim. More often than not, an attacker is interested in knowing if the victim accessed any content from a small subset and, if so, which content they accessed.
+To do this, the attacker takes the following steps: 
+1) Collect network traces
+2) Build a classifier trained on the collected network traces
+3) Gain access to the network shared with the victim
+4) Profile the victim's network traffic
+5) Determine whether the victim accessed any content of interest to the attacker
+
+First, the attacker builds a collection of the content (e.g. webpages and video streams) that they are interested in. 
+They collect network traces for this content under various network conditions to account for variability caused by the network itself. 
+Then, the attacker trains a classifier on this collected network trace.
+The classifier can use multiple features like packer sizes, inter-packer timing, total bytes transferred in a burst of packets, the duration of the burst and the interval between bursts, and the direction of the bursts \cite{schuster2017beautyburst}.
+
+Next, the attacker infiltrates a machine that shares some network path with the victim.
+This machine could also be the victim's machine. 
+The malicious application could be a javascript-based advertisement on the page the victim is visiting or another process on the victim's machine, thus sharing the network card on that machine. 
+It could also be a shared router/switch in the victim's network path to the server.
+The attacker could either be another client connected to the same shared router/switch or someone who owns the router/switch.
+If the attacker owns an element in the network path, they can directly observe all the features necessary to carry out the attack. 
+Otherwise, they create congestion in the shared network path such that the victim's network traffic would contend with the attacker's traffic.
+In this case, the attacker's traffic would be delayed, and the delay would be proportional to the victim's traffic, thus revealing some features of the victim's traffic.
+
+The attacker collects the network traces of its own traffic and, based on that, extracts the features of the victim's traffic flow. These extracted features are then run through the pre-trained classifier, which helps the attacker determine which content the victim accessed. \citeauthor{schuster2017beautyburst} demonstrated that one could train a Convolution Neural Network (CNN)-based classifier to determine which video the victim is streaming. Similarly, prior work has demonstrated that such a network side channel-based approach can also be used to determine which webpage the victim is visiting \cite{hayes2016kfp, panchenko2016website, gong2010fingerprinting}
+
+\subsection{Threat Model}\label{subsec:nsc-threat-model}

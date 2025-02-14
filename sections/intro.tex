@@ -4,45 +4,43 @@
 \chapter{Introduction}
 \label{ch:Introduction}
 
-Over the last decade, there has been a tremendous increase in the demand for greater computing capacity, primarily driven by advancements in big data analytics, complex simulations, and Artificial Intelligence (AI). 
-To satisfy this demand, there has been an increased focus on heterogeneous and disaggregated computing, with a parallel emphasis on enhancing security and privacy measures to safeguard sensitive data.
-Heterogeneous computing enables the integration of diverse processing units like CPUs, GPUs, FPGAs, and AI Accelerators. 
-Each of these components is designed explicitly to excel at specific tasks. 
-However, the user of such a system needs to be able to transfer data to/from these individual components seamlessly. 
-To facilitate this seamless transfer of data, interconnects such as PCIe provide the necessary pathways for communication.
-Disaggregated computing extends this concept by physically separating compute, memory, and storage into independent units that can be dynamically allocated based on the demand from the application. Such an approach increases resource utilisation in large-scale setups such as data centres. Much like heterogeneous systems, disaggregated systems require data transfer between the separated units. High-speed networking links such as Ethernet and Infiniband provide the pathways for transferring data.
+Computer networks have become a fundamental component of today's computing systems.
+%, scaling from global networks like the Internet to the interconnects that connect the CPU with additional devices and accelerators like the GPU. 
+The Internet connects billions of devices worldwide and allows two users or devices to connect, regardless of how physically far apart they are.
+Data centre networks link servers and storage systems, providing the infrastructure for large-scale computing.
+Beyond these traditional networks, interconnects like PCIe and CXL enable the CPU to communicate with peripheral devices and accelerators such as the GPU.
 
-While the communication pathways for heterogeneous computing and disaggregated computing utilise different links and protocols, they also have a lot of similarities and are susceptible to similar security concerns. 
-1) Both interconnects and networks require some form of addressing to send the data to the right destination. PCIe utilises the Bus-Device-Function (BDF) addressing, while networks may use MAC and/or IP addresses for the same. 
-2) Both of them utilise switches to allow multiple end-points to communicate with each other. 
-3) Both packetise data before transmitting them and use packet-switching on the switches to efficiently transmit data from multiple end-points. 
-4) Both have limited buffers on their controllers to buffer partially sent/received data. 
-5) Both are susceptible to security vulnerabilities caused by congestion or contention in the buffer on their controllers.
+Despite their differences in scale and usage, all of these networks have some similar characteristics, such as:
+1) They require some form of addressing to send the data to the right destination. PCIe uses Bus-Device-Function (BDF) addressing, while the Internet and data centre networks may use MAC, IP addresses, or Local/Global Identifiers for the same. 
+2) They utilise switches to allow multiple end-points to communicate to a single end-point. 
+3) They packetise data before transmitting them and use packet-switching on the switches to efficiently transmit data from multiple endpoints. 
+4) They have limited buffers on their controllers to buffer partially sent/received data.
 
-For years, encryption has been utilised to protect data from leakage when it is transmitted. 
-However, encryption does not hide the shape of the traffic (i.e. the packet size and transmission time).
-Previous studies have demonstrated that traffic shape correlates highly with the transmitted data. 
+An attacker can leverage the limited buffer size to create congestion, enabling them to obtain the shape (i.e., the packer size and transmission time) of a victim traffic flow.
+Although encryption has been used to protect data from leakage when transmitted, it does not hide the shape of the traffic.
+Previous studies have shown that the shape of the traffic correlates strongly with the transmitted data. 
 This correlation can be exploited to inadvertently reveal sensitive information on the network, such as the video being streamed by the user \cite{schuster2017beautyburst} or the website the user is accessing \cite{bhat2019varcnn, wang2014supersequence}. 
 Similarly, in interconnects, an adversary can determine the workload running on the GPU, the keystrokes of the user, the webpage being visited by the user \cite{tan2021invisible}, the bitrate of a video being encoded/transcoded, or the initialisation of a new VM in a shared cloud environment \cite{giechaskiel2022cross}. 
-\citet{schuster2017beautyburst}, \citet{tan2021invisible}, and \cite{giechaskiel2022cross} demonstrate how congestion in the buffers on the switch/routers can lead to data being inadvertently leaked. 
 In the literature, such attacks that leak data based on the shape of the traffic are known as network side-channel attacks.
 
-However, these network side-channel attacks usually rely on the following conditions: 
-1) The attacker's ability to saturate the bandwidth of the switch/router to create the congestion,
-2) The delay in the attacker's traffic is proportional to the shape of the victim traffic when the switch/router is congested, and
-3) The shape of the victim's traffic is correlated with the sensitive data the victim is transmitting.
-
-However, taking any of these conditions away from the attacks developed by previous studies would significantly hamper their ability to leak sensitive data. 
-To defend against such attacks, various strategies have been proposed to remove condition 3.
-These approaches either do not provide provable theoretical guarantees or have a high and non-adaptive bandwidth and latency overhead.
-A practical mitigation needs to be provable and needs to adapt to the current traffic conditions.
-With the advent of faster networks
-\footnote{Given the similarities between networks and interconnects, in the context of side-channels, we will use the term 'networks' to refer to both, unless explicitly specified},
-condition 1 is more challenging to achieve.
-However, condition 1 is not an absolute requirement, as the attacker can also face delays simply caused by scheduling multiple inputs onto a single output (e.g., two distinct endpoints trying to talk to the same upstream/downstream endpoint). However, this requires the attacker to have a much higher observation granularity than prior work has made possible.
-
+Prior work has proposed various mitigations to defend against such network side-channel attacks. However, these solutions either require modifications on the end hosts [??], % portable
+only support certain types of traffic or protocols [??], % modular
+or have a high overhead and do not scale well with multiple users [??]. % scalable
+In addition, limited attention has been given to side channels in interconnects such as PCIe. 
+Existing work [??] has focused on saturating the PCIe bandwidth to carry out a side-channel attack. However, this approach leads to a loss in the granularity at which such attacks can extract data.
 
 \input{sections/intro/contributions}
 \section{Publications and Collaborations}\label{sec:collabs}
 \section{Organisation}\label{sec:org}
+
+Interconnects, in general, can be thought of as networks that allow communication between different components of the same server. 
+They help the CPU communicate with the peripheral devices like the GPU, the network card, or the storage device. 
+Similar to traditional networks, the interconnects also transmit data in the form of packets and buffer them before sending out or when received.
+In the case of interconnects like PCIe, these buffers can be on the PCIe controller on the host, the device or a PCIe switch on the path.
+Just like the shared buffers on the NIC or switch in traditional networks, the PCIe controller buffers are shared between all applications or processes using the same communication path.
+
+Similar to the side-channel attack mechanism outlined in \ref{sec:network-side-channel-background}, the shared buffers on the PCIe controllers or switches can be exploited to observe the shape of the victim traffic that traverses the PCIe links.
+However, obtaining the shape of the victim traffic is challenging, given the high transmission rate and low latency of PCIe transactions compared to traditional networks.
+
 \endinput
+
