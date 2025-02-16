@@ -34,7 +34,8 @@ It also processes the received data, places it in the relevant LQ, and updates t
 
 In order to ensure that the operation of \textit{UShaper}, \textit{Prepare}, and \textit{QUIC worker} do not interfere with each other, we apply a few constraints in the implementation, and during the deployment of NetShaper.
 First, all three components are required to be pinned on separate cores so that the execution time of one may not impact the others.
-Second, in order to not leak the size of the payload due to the processing time of the enqueue operation done by the \textit{Prepare} thread, the \textit{Prepare} thread applies a lock for a fixed duration, during which the \textit{QUIC worker} can not transmit the data.
+Second, in order to not leak the size of the payload due to the processing time of the enqueue operation done by the \textit{Prepare} thread, the \textit{Prepare} thread applies a lock for a fixed duration, during which the \textit{QUIC worker} can not transmit the data. 
+We have outlined pseudo-code for both prepare and QUIC worker in \Cref{lst:prepare_and_worker}.
 Finally, when receiving data, the \textit{QUIC worker} also enqueues the dummy bytes to a designated LQ so that the processing time remains consistent with the size of the data (see Figure ??).
 
 \paragraph{Shared Memory.}
@@ -44,6 +45,12 @@ Similar to the stream types outlined in \Cref{sec:proxy-arch}, \textit{Control} 
 \textit{Payload} LQ consists of the bytes received from the end host or to be sent to the end host.
 \textit{Dummy} LQ consists of the dummy/padding bytes that are received.
 
+\begin{minipage}{\textwidth}
+\lstinputlisting[language=Python]{code/netshaper/prepare_and_worker.py}
+\captionsetup{type=lstlisting}
+\caption{Prepare and QUIC Worker Pseudo-code}
+\label{lst:prepare_and_worker}
+\end{minipage}
 
 \endinput
 
@@ -57,6 +64,4 @@ Similar to the stream types outlined in \Cref{sec:proxy-arch}, \textit{Control} 
 
 \endinput
 
-
-NetShaper can be deployed in a pair of middleboxes (see \Cref{fig:netshaper-setup}) and only requires the end hosts to set the proxy configuration on their machine, thus requiring minimal changes to the end hosts.
-NetShaper provides DP guarantees for any traffic transmitted between the pair of middleboxes.
+Should we add pseudo-codes for UShaper and DShaper?
