@@ -5,6 +5,7 @@ NetShaper \cite{sabzi2024netshaper} is both the name of a differential-privacy-b
 Here, we provide a brief description of the NetShaper Framework.
 
 \subsection{Differential Privacy}
+\label{subsec:dp-bg}
 NetShaper's framework relies on Differential Privacy (DP) to provide robust, mathematical guarantees against side-channel attacks in internet networks.
 DP is a framework originally proposed by \citeauthor{dwork2006differential} for releasing usable aggregate metrics regarding a dataset while limiting the leakage of information about individual data points in that dataset.
 In other words, DP bounds the probability of an observer being able to infer if an individual data point was used to generate the aggregate metric the observer has access to.
@@ -31,6 +32,7 @@ This condition holds true as long as the operations carried out do not involve a
 \textbf{2) Composition:} It is possible to quantify the total privacy loss when multiple queries are issued to the same $(\varepsilon, \delta)-DP$ algorithm.
 
 \subsection{Applying DP on network streams}
+\label{subsec:applying-dp-on-network-streams-bg}
 NetShaper uses DP to mitigate network side-channel attacks. 
 To achieve this, NetShaper relies on two key ideas: 
 First, NetShaper represents network traffic streams as datasets to which DP can be applied.

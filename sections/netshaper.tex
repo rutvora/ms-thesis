@@ -1,7 +1,33 @@
 \chapter{NetShaper: A Differentially-Private Side Channel Mitigation System}
 
-\section{Proxy Architecture}\label{sec:proxy-arch}
-\section{Stream Aggregation}\label{sec:stream-aggregation}
+NetShaper \cite{sabzi2024netshaper} is both the name of the framework and the system that implements the framework to mitigate network side-channel attacks in internet applications.
+We have provided a brief outline of the framework in \Cref{sec:netshaper-framework-bg}. 
+Here, we describe the NetShaper system.
+
+We first outline the requirements that the system should fulfil.
+First, in any given window $W$, the system should be able to obtain the size of the payload in the buffering queue, with noise added to it. 
+That is, the system should be able to complete the execution of $f_{DP}(S, t_{start}, t_{start} + W)$.
+In the same window, the system should also be able to send out the payload, with padding, if necessary, such that the total data sent out, $b_{out}$, is equal to the noised size. 
+However, it is sufficient to be able to queue $b_{out}$ bytes to be sent out, even if the actual transmission goes beyond the window $W$, as long as any delays were not caused by the payload coming in or already present in the buffering queue. 
+The reason for this is the post-processing property of DP that we outlined in \Cref{subsec:dp-bg}.
+
+Second, the payload and the padding should be indistinguishable to any observer observing the outbound packet stream.
+Hence, the payload and padding should both be subject to the same congestion control, re-transmission, loss recovery, and other network behaviour.
+In addition, the outbound transmission should provide the same or a higher level of reliability than the applications using this system expect.
+
+Finally, the system should be modular so that modifications to any one sub-component do not require changes in the other components.
+The system should also be portable and easily deployable, requiring none to minimal changes on the end hosts where the applications are running.
+These goals ascertain that the system is easy to adopt and deploy and can easily be modified per the deployer's requirements.
+
+
+% 1. Complete DP measurement within the window W
+% 2. Data and Dummy should be indistinguishable
+% 3. Should provide the same level of reliability the application expects
+% 4. Should be modular for easy modification to sub-components
+% 5. Should be portable and easily deployable, with minimal modifications of the end-hosts.
+
+\input{sections/netshaper/proxy_arch}
+\input{sections/netshaper/mb_design}
 \section{Performance}\label{sec:netshaper-performance}
 \section{Limitations and Discussion}\label{sec:netshaper-discussion}
 
