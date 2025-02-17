@@ -1,8 +1,13 @@
 \chapter{Side Channel Attacks in Interconnects}
 
-\section{Measuring latency of async store instructions}\label{sec:async-stores}
-\section{Creating contention with store instructions}\label{sec:contention-with-stores}
-\section{Creating contention with cudaMemcpy}\label{sec:contention-with-cudamemcpy}
+This chapter describes some avenues that can be used to carry out a side-channel attack on interconnects like PCIe and the challenges in pursuing those approaches.
+In order to carry out a side-channel attack on PCIe, the first obvious step is to be able to transmit some data on the interconnect.
+There are two major ways to achieve this: loads/stores on PCIe memory or configuration mapped to the CPU's address space or using DMA from the PCIe device to copy data to/from the CPU memory.
+We describe the first approach in \Cref{sec:contention-with-stores}, and the second approach in \Cref{sec:contention-with-cudamemcpy}.
+
+
+\input{sections/interconnect-sc/contention_with_stores}
+\input{sections/interconnect-sc/contention_with_dma}
 \section{Discussion}\label{sec:interconnect-sc-discussion}
 
 \endinput
