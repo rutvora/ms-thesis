@@ -1,0 +1,19 @@
+\subsection{The QUIC protocol}
+\label{subsec:netshaper-background-quic}
+
+QUIC is a connection-oriented transport layer protocol that can be deployed on top of UDP.
+It is now standardised under RFC 9000 \cite{quic_rfc}.
+It provides many features which are similar to TCP, like flow control, loss recovery, and congestion control. 
+However, it also alleviates some problems that TCP encounters.
+For example, QUIC enforces encryption in the initial handshake, thus ensuring that all traffic is always encrypted.
+In addition, a QUIC connection can consist of multiple dynamically created streams, each of which can act as an independent byte stream. 
+This helps alleviate the problem of head-of-line blocking faced by TCP, ensuring that one blocked stream does not affect others.
+Each stream has a unique header containing the stream ID and the stream type, among other information.
+Multiple such streams, with their headers, can be a part of a single encrypted QUIC packet.
+This ensures that an attacker can not determine the number of streams being transmitted in a QUIC packet just by observing the encrypted packet or traffic stream.
+
+
+\endinput
+
+\footnote{While QUIC has a PADDING frame, we don't use it, as a packet that only contains padding frames will not be re-transmitted in case of packet loss, thus revealing that it was a dummy packet.}
+

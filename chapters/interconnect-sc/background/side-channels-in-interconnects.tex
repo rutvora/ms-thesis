@@ -1,0 +1,55 @@
+\subsection{Side Channels in Interconnects}
+\label{subsec:interconnect-sc-background-side-channels}
+
+Conceptually, carrying out a side-channel interconnect is very similar to carrying out such an attack on internet networks. 
+The attacker creates congestion on a buffer in the communication path between the host (CPU) and the peripheral (e.g. GPU) and observes their own delay.
+This delay would be proportional to the amount of data transferred by the victim, which would help the attacker gain insight into the victim's traffic shape.
+
+However, a few differences between interconnects and traditional networks make it challenging to implement such an attack. \\
+\textit{First}, The bandwidth of interconnects like PCIe is at least an order of magnitude higher than that of internet networks.
+While a typical bandwidth in an internet network may be 1-10Gbps ( = 0.125 - 1.25 GBps), PCIe 4.0 can operate at a rate of 32GBps.
+The high bandwidth makes it non-trivial to saturate the PCIe link. \\
+\textit{Second}, latency in PCIe is at least three orders of magnitude smaller than that of internet networks.
+Typically, internet latency is measured in milliseconds, while PCIe latency is measured in microseconds.
+The low latency makes it difficult for the attacker to measure the delays accurately. \\
+\textit{Third}, unlike internet networks, PCIe does not extend outside the machine of the host CPU.
+This further adds to the challenge that the attacker needs to co-locate with the victim application on the same machine. \\
+\textit{Fourth}, the PCIe protocol has a fixed behaviour depending on the type of transaction. 
+Most transaction types can not generate enough traffic to even come close to saturating the bandwidth of PCIe. 
+While saturating the bandwidth may not be necessary to create a side-channel attack, it would be useful if there is always at least one attacker packet in the buffer whenever the victim might transmit.
+This would ensure that the attacker can observe a delay in their own packets for each packet or set of packets the victim transmits.
+
+We provide a list of the transactions PCIe supports in \Cref{tab:pcie-transaction-types}, and a description of what each PCIe transaction type entails below: \\
+\textbf{Posted:} Transactions where no response is issued or expected. 
+These transactions are also asynchronous and hence allow multiple transactions of the same type to be in flight at the same time.\\
+\textbf{Non-posted:} Transactions where a response is required. 
+These types of transactions are also synchronous.
+As such, one can not execute multiple of these simultaneously.\\
+\textbf{Completions:} The completion of a previous non-posted transaction.\\
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|l|l|p{0.65\textwidth}|}
+        \hline
+        \textbf{Transaction} & \textbf{Type} & \textbf{Description} \\ 
+        \hline
+        Memory Read  & Non-Posted & Read from a memory-mapped address space \\ 
+        Memory Write & Posted     & Write to a memory-mapped address space  \\ 
+        I/O Read     & Non-Posted & (Legacy PCI) Read from the I/O address space \\ 
+        I/O Write    & Non-Posted & (Legacy PCI) Write to the I/O address space \\ 
+        Config Read  & Non-Posted & Read control and status registers of the PCIe interface \\ 
+        Config Write & Non-Posted & Write control and status registers of the PCIe interface \\  
+        Message      & Posted     & Conveys additional information (e.g. Interrupts, Power Management, Error Signalling, Vendor-defined messaging). \\
+        Completion   & Completion & Response to all non-posted transactions \\ 
+        \hline
+    \end{tabular}
+    \caption{PCIe transaction types}
+    \label{tab:pcie-transaction-types}
+\end{table}
+
+\endinput
+
+
+
+
+https://www.linkedin.com/pulse/pci-express-primer-3-transaction-layer-simon-southwell/

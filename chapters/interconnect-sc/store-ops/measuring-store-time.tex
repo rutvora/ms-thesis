@@ -1,0 +1,14 @@
+\subsection{Measuring time of store operations}
+\label{subsec:interconnect-sc-store-ops-measuring-time}
+
+In order to measure the completion time of a store operation which is issued out-of-order, we make use of two key insights:
+
+\textit{First}, the CPU core would need to keep track of all instructions executed out-of-order so that they are retired in program order.
+Keeping this track would require a scheduler and a buffer in the hardware, which would have a limited and fixed size.
+The AMD CPU has four schedulers as described in \Cref{subsubsec:interconnect-sc-background-cpu-arch-pipelines}. Each scheduler has a fixed number of instruction slots $size_{sched}$.
+In addition, for tracking load and store operations that are in flight, the CPU also has an LSQ, with a fixed number of slots for loads ($size_{ldq}$) and for stores ($size_{stq}$).
+So, if the total number of pending (in flight) store instructions is larger than the total size of the scheduler slots and the store queue, the next instruction will be blocked, until one (or more) of the previous instructions finishes.
+
+\textit{Second}, it is sufficient for the attacker to know if \textit{a} store instruction was delayed, and not if a particular store instruction was delayed.
+% Convince why this is the case.
+This would mean that we can use the first insight to queue a timer instruction immediately after issuing $size_{sched} + size_{stq}$ stores, and that timer will execute only after a store has completed.
