@@ -16,25 +16,28 @@ As such, encryption effectively conceals the content of the data that is in tran
 
 While encryption protects the content of the data in transit, it does not conceal the metadata corresponding to the transmission.
 Metadata, such as packet sizes and timings, are visible to any adversary with access to the shared network link.
-Prior work has demonstrated that this metadata is strongly correlated with the data being transmitted and can inadvertently leak the contents of the transmission.
+Prior work has demonstrated that in some applications, this metadata is strongly correlated with the data being transmitted and, hence, can inadvertently leak the contents of the transmission.
 For example, attackers on the internet can identify the video a user is streaming \cite{schuster2017beautyburst} or the webpage they are visiting \cite{gong2010fingerprinting, wang2014supersequence}.
-Even when the data is being transmitted on an interconnect within a computer (e.g. from the CPU to the GPU or NIC), the corresponding metadata can reveal the user's text input or even the machine learning model being trained \cite{tan2021invisible}.
+Even when the data is being transmitted on an interconnect within a computer (e.g. from a CPU to a GPU or NIC), the corresponding metadata can reveal the user's text input or even the machine learning model being trained \cite{tan2021invisible}.
 In the literature, such attacks are commonly known as network side-channel attacks.
+Network side channels have been studied extensively in the internet [??], and to a limited extent in datacenter networks [??] and in on-chip and off-chip interconnects [??].
 
-While there has been significant research in defending against network side-channel attacks, most solutions are not modular, scalable, or easily deployable.
+Network side-channel attacks in internet applications have focused on exposing the identities of communicating endpoints or compromising the privacy of transmitted traffic.
+In order to defend against such attacks, several solutions have been proposed [??]. 
+However, most solutions are not modular or easily deployable and do not scale well with an increasing number of end hosts.
 Cs-BUFLO \cite{cai2014csbuflo} relies on OpenSSH and requires modifying the OpenSSH library on the end host. 
 Walkie-talkie \cite{wang2017walkie} relies on a modification to the browser of the client.
 Pacer \cite{mehta2022pacer} requires modification to the hypervisor and the kernel of the guest VM.
 Other defences such as Supersequence \cite{wang2014supersequence}, Glove \cite{nithyanand2014glove} and Tamaraw \cite{cai2014tamaraw} rely solely on simulation results and do not provide any deployable system to mitigate network side-channel attacks.
 
-In addition, prior work has provided limited focus on how side-channel attacks can be carried out on interconnects.
+Network side-channel attacks in interconnects have received far less attention.
 Most prior work relies on an already constrained and out-of-date system to carry out their attacks.
-Invisible Probe \cite{tan2021invisible} and Locked Down \cite{side2022lockeddown} both rely on a more constrained PCIe 3.0.
-Invisible Probe \cite{tan2021invisible} and the FPGA-based attack by \citet{giechaskiel2022cross} both rely on creating contention in a constrained PCIe switch or PCH.
+Invisible Probe \cite{tan2021invisible} and Locked Down \cite{side2022lockeddown} both rely on a slower PCIe v3.0.
+Invisible Probe \cite{tan2021invisible} and the FPGA-based attack by \citet{giechaskiel2022cross} both rely on creating contention in a PCIe switch or PCH that has multiple downlinks but only one uplink, resulting in easier congestion in the uplink.
 % The work by \citet{khaliq2021timing} relies on a highly-constrained desktop CPU to create contention.
 
 In this thesis, we first present a modular, portable and scalable network side-channel mitigation system called NetShaper 
-\footnote{NetShaper is both the name of a differential-privacy-based framework and a system that implements the framework. This thesis focuses on the NetShaper system} \cite{sabzi2024netshaper}.
+\footnote{NetShaper is both the name of a differential-privacy-based framework and a system that implements the framework. This thesis focuses on the NetShaper system.} \cite{sabzi2024netshaper}.
 Second, we demonstrate additional avenues that can be used to carry out side-channel attacks in interconnects and their caveats.
 
 % \input{chapters/introduction/contributions}
