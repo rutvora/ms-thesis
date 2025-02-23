@@ -4,14 +4,53 @@
 \chapter{Introduction}
 \label{ch:Introduction}
 
-\input{chapters/introduction/contributions}
+Today, we live in a connected world where various network links are used to transmit and receive a lot of data. 
+This data can be a webpage or video being streamed by a user on the internet. 
+It can also be an image or a machine learning model being sent from the CPU to the GPU for processing. 
+Given the extensive scale at which data is transmitted, ensuring its security and privacy during transit is of paramount importance.
 
-\section{Publications and Collaborations}\label{sec:collabs}
+In order to protect data that is in transit, we have come to rely on encryption. 
+Most encryption mechanisms today rely on mathematical functions that transform the plaintext into a ciphertext. 
+Only an entity with the correct key can decipher the ciphertext back into plaintext. 
+As such, encryption effectively conceals the content of the data that is in transit.
 
+While encryption protects the content of the data in transit, it does not conceal the metadata corresponding to the transmission.
+Metadata, such as packet sizes and timings, are visible to any adversary with access to the shared network link.
+Prior work has demonstrated that this metadata is strongly correlated with the data being transmitted and can inadvertently leak the contents of the transmission.
+For example, attackers on the internet can identify the video a user is streaming \cite{schuster2017beautyburst} or the webpage they are visiting \cite{gong2010fingerprinting, wang2014supersequence}.
+Even when the data is being transmitted on an interconnect within a computer (e.g. from the CPU to the GPU or NIC), the corresponding metadata can reveal the user's text input or even the machine learning model being trained \cite{tan2021invisible}.
+In the literature, such attacks are commonly known as network side-channel attacks.
+
+While there has been significant research in defending against network side-channel attacks, most solutions are not modular, scalable, or easily deployable.
+Cs-BUFLO \cite{cai2014csbuflo} relies on OpenSSH and requires modifying the OpenSSH library on the end host. 
+Walkie-talkie \cite{wang2017walkie} relies on a modification to the browser of the client.
+Pacer \cite{mehta2022pacer} requires modification to the hypervisor and the kernel of the guest VM.
+Other defences such as Supersequence \cite{wang2014supersequence}, Glove \cite{nithyanand2014glove} and Tamaraw \cite{cai2014tamaraw} rely solely on simulation results and do not provide any deployable system to mitigate network side-channel attacks.
+
+In addition, prior work has provided limited focus on how side-channel attacks can be carried out on interconnects.
+Most prior work relies on an already constrained and out-of-date system to carry out their attacks.
+Invisible Probe \cite{tan2021invisible} and Locked Down \cite{side2022lockeddown} both rely on a more constrained PCIe 3.0.
+Invisible Probe \cite{tan2021invisible} and the FPGA-based attack by \citet{giechaskiel2022cross} both rely on creating contention in a constrained PCIe switch or PCH.
+% The work by \citet{khaliq2021timing} relies on a highly-constrained desktop CPU to create contention.
+
+In this thesis, we first present a modular, portable and scalable network side-channel mitigation system called NetShaper 
+\footnote{NetShaper is both the name of a differential-privacy-based framework and a system that implements the framework. This thesis focuses on the NetShaper system} \cite{sabzi2024netshaper}.
+Second, we demonstrate additional avenues that can be used to carry out side-channel attacks in interconnects and their caveats.
+
+% \input{chapters/introduction/contributions}
+
+% \section{Publications and Collaborations}\label{sec:collabs}
 
 
 \endinput
 
+- The security and privacy of data in transit, whether it be on the internet or within a server (on the interconnect), is important. 
+- While encryption has become the norm to ensure the security and privacy of data in transit, side-channel attacks can undermine this by using metadata like the shape of the traffic.
+- Side-channel attacks can affect both data being sent over the internet and over interconnects
+- While there is significant prior work in defending against side channels in internet networks, the solutions are not easily deployable and are not modular.
+- In addition, prior work has provided limited focus on how side-channels can be carried out on interconnects.
+
+-------------------------------------------------------------------------------------------------------------------
 Computer networks have become a fundamental component of today's computing systems.
 %, scaling from global networks like the Internet to the interconnects that connect the CPU with additional devices and accelerators like the GPU. 
 The Internet connects billions of devices worldwide and allows two users or devices to connect, regardless of how physically far apart they are.
@@ -45,3 +84,4 @@ Just like the shared buffers on the NIC or switch in traditional networks, the P
 
 Similar to the side-channel attack mechanism outlined in \ref{sec:network-side-channel-background}, the shared buffers on the PCIe controllers or switches can be exploited to observe the shape of the victim traffic that traverses the PCIe links.
 However, obtaining the shape of the victim traffic is challenging, given the high transmission rate and low latency of PCIe transactions compared to traditional networks.
+

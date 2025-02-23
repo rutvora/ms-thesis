@@ -1,2 +1,18 @@
 \section{Thesis Contributions}
 \label{sec:introduction-contributions}
+
+
+\endinput
+
+- In this thesis, we first present a modular, portable and scalable network side-channel mitigation system called NetShaper, and second, we demonstrate additional avenues that can be used to carry out side-channel attacks in interconnects and their caveats.
+
+Concrete Contributions:
+- We first demonstrate how to build a scalable, modular, and portable middlebox-based proxy solution that can defend against side-channel attacks
+    - Modular proxy architecture
+    - Portability of the application (easily deployable, with no complicated system modifications necessary)
+    - use of QUIC for aggregated streams
+- We also demonstrate avenues with which one can generate contention in the PCIe controller buffers, which are a building block to carry out a side-channel attack
+    - Using CPU-issued instructions (stores)
+    - Mechanism to measure async stores that are issued in an OOO processor
+        - This includes reverse engineering the AMD CPU architecture (and diagram)
+    - Using cudaMemcpy

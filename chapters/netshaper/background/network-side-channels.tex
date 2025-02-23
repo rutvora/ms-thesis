@@ -3,6 +3,7 @@
 
 Today, people rely on the internet for everyday tasks such as sending a message or calling friends, watching a video or movie, sharing files, accessing their bank accounts, or looking up their medical condition.
 As people using the internet may be transmitting or receiving sensitive information, it becomes necessary to protect these transmissions.
+
 While encryption can protect against eavesdroppers interested in obtaining sensitive information, encryption alone is insufficient.
 Encryption does not conceal the packet sizes and timing, which can be correlated with the sensitive information of the user. 
 An attacker can leverage this correlation to infer the sensitive information solely by observing the network link and obtaining the packet sizes and timing.
@@ -10,7 +11,7 @@ Such attacks are called network side-channel attacks.
 
 With a network side-channel attack, an attacker wants to determine the contents of the web traffic being transmitted or received by the victim.
 More often than not, an attacker is interested in knowing if the victim accessed any content from a small subset and, if so, which content they accessed.
-To do this, the attacker takes the following steps: 
+To do this, the attacker follows these steps: 
 1) Collect network traces
 2) Build a classifier trained on the collected network traces
 3) Gain access to the network shared with the victim
@@ -22,8 +23,8 @@ They collect network traces for this content under various network conditions to
 Then, the attacker trains a classifier on this collected network trace.
 The classifier can use multiple features like packer sizes, inter-packer timing, total bytes transferred in a burst of packets, the duration of the burst and the interval between bursts, and the direction of the bursts \cite{schuster2017beautyburst}.
 
-Now, to carry out the actual attack, the attacker gains access to some network path that is shared with the victim.
-The attacker could own a router or switch on the network path of the victim, or could own another machine that shares the same router or switch that the victim is connected to.
+Now, to carry out the attack, the attacker gains access to some network path shared with the victim.
+The attacker could own a router or switch on the network path of the victim, or another machine that shares the same router or switch that the victim is connected to.
 If they own an element in the network path, they can directly observe all the features necessary to carry out the attack. 
 Otherwise, they create congestion in the shared network path such that the victim's network traffic would contend with the attacker's traffic.
 In this case, the attacker's traffic would be delayed, and the delay would be proportional to the victim's traffic, thus revealing some features of the victim's traffic.
@@ -31,9 +32,9 @@ The attacker could also have infiltrated the victim's machine, and maybe running
 The malicious application could be a javascript-based advertisement on the page the victim is visiting or another process on the victim's machine, thus gaining the ability to create contention on the network card in the victim's machine. 
 
 
-Once the attacker has access to the shared network path with the victim, they collect the network traces of their own traffic. and, based on that, extracts the features of the victim's traffic flow.
+Once the attacker has access to the shared network path with the victim, they collect the network traces of their own traffic. and, based on that, extract the features of the victim's traffic flow.
 These extracted features are then run through the pre-trained classifier, which helps the attacker determine which content the victim accessed. 
 \citet{schuster2017beautyburst} demonstrated that one could train a Convolution Neural Network (CNN)-based classifier to determine which video the victim is streaming.
-Similarly, prior work has demonstrated that such a network side channel-based approach can also be used to determine which webpage the victim is visiting \cite{hayes2016kfp, panchenko2016website, gong2010fingerprinting}
+Similarly, prior work has demonstrated that such a network side-channel attack can also be used to determine which webpage the victim is visiting \cite{hayes2016kfp, panchenko2016website, gong2010fingerprinting}
 
 % \section{Threat Model}\label{sec:nsc-threat-model}
