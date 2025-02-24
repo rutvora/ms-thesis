@@ -9,11 +9,11 @@ As such, the videos are split into five-second segments, which are compressed in
 Attacks that exploit this correlation to reveal some information about the traffic being transmitted are known as network side-channel attacks.
 
 
-In order to mitigate network side-channel attacks, prior work has proposed various methods to modify the shape of the traffic to hide the correlation between the content of the traffic and the packet sizes and timing \cite{hou2020wf, nasr2021blind, rahman2020mockingbird, shan2021dolos, wang2017walkie, wright2009traffic, mehta2022pacer, zhang2019statistical, cai2014csbuflo}.
-However, prior work has focused less on the ease of adoption of these solutions. 
-Some solutions only rely on simulations and do not provide a functional and deployable system at all \cite{wang2014supersequence, nithyanand2014glove, cai2014tamaraw}. 
-Others require non-trivial modifications to the end host and either do no support or do not scale well with multiple users \cite{cai2014csbuflo, mehta2022pacer}.
-In addition, None of these systems have a modular design that can be easily extended to support more types of traffic and protocols.
+In order to mitigate network side-channel attacks, prior work has proposed various methods to modify the shape of the traffic to hide the correlation between the content of the traffic and the packet sizes and timing \cite{hou2020wf, nasr2021blind, rahman2020mockingbird, shan2021dolos, wang2017walkie, wright2009traffic, mehta2022pacer, zhang2019statistical, cai2014csbuflo, cherubin2017llama, luo2011httpos, smith2022qcsd, abusnaina2020dfd, cai2014tamaraw, gong2022surakav, juarez2016wtfpad, wang2014supersequence, wright2009morphing, barradas2017deltashaper}.
+Of these solutions, very few provide any deployable system to mitigate network side-channel attacks.
+Of the ones that do provide deployable systems, many require non-trivial modifications to the end host and either do not support or do not scale well with multiple users \cite{cai2014csbuflo, cherubin2017llama, luo2011httpos, smith2022qcsd, wang2017walkie, mehta2022pacer}.
+Others are either not application agnostic or do not adapt to the application traffic \cite{barradas2017deltashaper, cherubin2017llama, luo2011httpos}.
+In addition, none of these systems have a modular design that can be easily extended to support additional types of traffic and additional protocols.
 
 This chapter presents the NetShaper system, a modular, portable, scalable network side-channel mitigation system.
 NetShaper is a modular transport layer (L4) proxy tunnel that can be integrated with any network stack and within any node.

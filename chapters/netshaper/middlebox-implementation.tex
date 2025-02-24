@@ -16,7 +16,7 @@ As outlined in \Cref{fig:middlebox-implementation}, NetShaper's middlebox consis
 
 \paragraph{Shared Memory.}
 Both \textit{UShaper} and \textit{DShaper} have a shared memory between them.
-The shared memory consists of $2*(k + 2)$ Lamport Queues (LQs) [??]
+The shared memory consists of $2*(k + 2)$ Lamport Queues (LQs) \cite{lamportqueue}
 \footnote{Lamport Queues are lock-free single producer single consumer (SPSC) queues. They are useful to ensure that no locking is required when putting data in or pulling data out from the queues.}, 
 where $k$ is the fixed number of streams that were configured at initialisation.
 There is one queue for each direction of transmission for each of the $k$ streams that are initialised, and for the dummy and control streams.
@@ -33,15 +33,18 @@ The UShaper also consists of a FlowMap that maps an end-host application with a 
 In addition, it assigns an unused pair of LQs (one outbound and one inbound) to a new client and revokes that whenever the client terminates the connection.
 The \textit{UShaper} receives outbound traffic from the end host and enqueues the payload in the assigned LQ.
 Similarly, it dequeues inbound traffic from the inbound LQs and sends it to the corresponding end hosts.
+% We have implemented \textit{UShaper} in 1100 lines of C++ code.
 
 \paragraph{DShaper.}
-The \textit{DShaper} consists of two threads: \textit{Prepare} and \textit{QUIC worker}, and a FlowMap.
+The \textit{DShaper} consists of two threads, \textit{Prepare} and \textit{QUIC worker}, and a FlowMap.
 The FlowMap maps an LQ with a pre-initialised QUIC stream.
-The \textit{Prepare} thread also measures the data available in the outbound LQs at the start of the window $W$.
+The \textit{Prepare} thread measures the data available in the outbound LQs at the start of the window $W$.
 It then adds noise to this available size based on the DP parameters.
 Finally, it enqueues the payload and padding that needs to be transmitted.
 The \textit{QUIC worker} transmits the enqueued data out to the network.
-It also processes the received data, places it in the relevant LQ, and updates the FlowMap whenever a client initialises or terminates a connection.
+It also processes the received data, places it in the relevant LQ, and updates the FlowMap when necessary.
+% We have implemented \textit{DShaper} in 1800 lines of C++ code
+% \footnote{\label{footnote:msquic-loc} Both \textit{UShaper} and \textit{DShaper} consist of the MSQUIC implementation of QUIC, which is 180k lines of code, and is a part of NetShaper's TCB.}.
 
 \subsection{Ensuring secret-independent shaping}
 \label{subsed:netshaper-secret-independent-shaping-implementation}

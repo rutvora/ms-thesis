@@ -20,15 +20,20 @@ Prior work has demonstrated that in some applications, this metadata is strongly
 For example, attackers on the internet can identify the video a user is streaming \cite{schuster2017beautyburst} or the webpage they are visiting \cite{gong2010fingerprinting, wang2014supersequence}.
 Even when the data is being transmitted on an interconnect within a computer (e.g. from a CPU to a GPU or NIC), the corresponding metadata can reveal the user's text input or even the machine learning model being trained \cite{tan2021invisible}.
 In the literature, such attacks are commonly known as network side-channel attacks.
-Network side channels have been studied extensively in the internet [??], and to a limited extent in datacenter networks [??] and in on-chip and off-chip interconnects [??].
+Network side channels have been studied extensively in the internet \cite{abusnaina2020dfd, barradas2020poking, barradas2017deltashaper, beckerle2022splitting, bhat2019varcnn, cai2014csbuflo, cai2014tamaraw, chen2010reality, cherubin2017llama, de2020trafficsliver, dyer2012peek, gong2020zero, gong2022surakav, hayes2016kfp, hou2020wf, juarez2016wtfpad, lazar2018karaoke, lu2018dynaflow, luo2011httpos, meier2022ditto, nasr2021blind, nithyanand2014glove, rahman2020mockingbird, schuster2017beautyburst, shan2021dolos, shapira2019flowpic, sirinam2018df, smith2022qcsd, van2015vuvuzela, wang2014supersequence, wang2017walkie, white2011phonotactic, wright2009morphing}, 
+and to a limited extent in datacenter networks \cite{tahir2016sneak, saeed2020cross, moon2015nomad, mehta2022pacer, beams2021ifs, kadloor2016mitigating, vattikonda2012tdma, bilal2018mitigating} 
+and in on-chip and off-chip interconnects \cite{tan2021invisible, khaliq2021timing, giechaskiel2022cross, kim2022pcie, side2022lockeddown, dutta2023spy, fang2023gotcha, aga2017invisimem, rodrigues2024busted, sepulveda2021beyond, reinbrecht2016gossip, indrusiak2019side}.
 
 Network side-channel attacks in internet applications have focused on exposing the identities of communicating endpoints or compromising the privacy of transmitted traffic.
-In order to defend against such attacks, several solutions have been proposed [??]. 
-However, most solutions are not modular or easily deployable and do not scale well with an increasing number of end hosts.
-Cs-BUFLO \cite{cai2014csbuflo} relies on OpenSSH and requires modifying the OpenSSH library on the end host. 
-Walkie-talkie \cite{wang2017walkie} relies on a modification to the browser of the client.
-Pacer \cite{mehta2022pacer} requires modification to the hypervisor and the kernel of the guest VM.
-Other defences such as Supersequence \cite{wang2014supersequence}, Glove \cite{nithyanand2014glove} and Tamaraw \cite{cai2014tamaraw} rely solely on simulation results and do not provide any deployable system to mitigate network side-channel attacks.
+In order to defend against such attacks, several solutions have been proposed. 
+However, many of the proposed defences rely only on simulations and do not provide any practical deployable systems \cite{abusnaina2020dfd, beckerle2022splitting, cai2014tamaraw, gong2022surakav, hou2020wf, juarez2016wtfpad, nasr2021blind, rahman2020mockingbird, shan2021dolos, wang2014supersequence, wright2009morphing}.
+Of those that do provide concrete systems, most are not easily deployable and do not scale well with an increasing number of end hosts or do not support a variety of applications
+\cite{cai2014csbuflo, cherubin2017llama, luo2011httpos, smith2022qcsd, wang2017walkie, mehta2022pacer, cherubin2017llama, luo2011httpos, barradas2017deltashaper, beckerle2022splitting, de2020trafficsliver}.
+% For example, some solutions require end-host modifications and do not scale well with the number of clients \cite{cai2014csbuflo, cherubin2017llama, luo2011httpos, smith2022qcsd, wang2017walkie, mehta2022pacer}. 
+% Cs-BUFLO \cite{cai2014csbuflo} relies on OpenSSH and requires modifying the OpenSSH library on the end host. 
+% Walkie-talkie \cite{wang2017walkie} relies on a modification to the browser of the client.
+% Pacer \cite{mehta2022pacer} requires modification to the hypervisor and the kernel of the guest VM.
+% Others are either not application agnostic or do not adapt to the bandwidth and latency requirements of the application \cite{cherubin2017llama, luo2011httpos, barradas2017deltashaper}.
 
 Network side-channel attacks in interconnects have received far less attention.
 Most prior work relies on an already constrained and out-of-date system to carry out their attacks.
@@ -47,44 +52,18 @@ Second, we demonstrate additional avenues that can be used to carry out side-cha
 
 \endinput
 
-- The security and privacy of data in transit, whether it be on the internet or within a server (on the interconnect), is important. 
-- While encryption has become the norm to ensure the security and privacy of data in transit, side-channel attacks can undermine this by using metadata like the shape of the traffic.
-- Side-channel attacks can affect both data being sent over the internet and over interconnects
-- While there is significant prior work in defending against side channels in internet networks, the solutions are not easily deployable and are not modular.
-- In addition, prior work has provided limited focus on how side-channels can be carried out on interconnects.
 
--------------------------------------------------------------------------------------------------------------------
-Computer networks have become a fundamental component of today's computing systems.
-%, scaling from global networks like the Internet to the interconnects that connect the CPU with additional devices and accelerators like the GPU. 
-The Internet connects billions of devices worldwide and allows two users or devices to connect, regardless of how physically far apart they are.
-Data centre networks link servers and storage systems, providing the infrastructure for large-scale computing.
-Beyond these traditional networks, interconnects like PCIe and CXL enable the CPU to communicate with peripheral devices and accelerators such as the GPU.
+End-host modification (not scalable):
+\cite{cai2014csbuflo, cherubin2017llama, luo2011httpos, smith2022qcsd, wang2017walkie}
 
-Despite their differences in scale and usage, all of these networks have some similar characteristics, such as:
-1) They require some form of addressing to send the data to the right destination. PCIe uses Bus-Device-Function (BDF) addressing, while the Internet and data centre networks may use MAC, IP addresses, or Local/Global Identifiers for the same. 
-2) They utilise switches to allow multiple end-points to communicate to a single end-point. 
-3) They packetise data before transmitting them and use packet-switching on the switches to efficiently transmit data from multiple endpoints. 
-4) They have limited buffers on their controllers to buffer partially sent/received data.
+Relies on only simulation or do not have any deployable implementation:
+\cite{abusnaina2020dfd, beckerle2022splitting, cai2014tamaraw, gong2022surakav, hou2020wf, juarez2016wtfpad, nasr2021blind, rahman2020mockingbird, shan2021dolos, wang2014supersequence, wright2009morphing}
 
-An attacker can leverage the limited buffer size to create congestion, enabling them to obtain the shape (i.e., the packer size and transmission time) of a victim traffic flow.
-Although encryption has been used to protect data from leakage when transmitted, it does not hide the shape of the traffic.
-Previous studies have shown that the shape of the traffic correlates strongly with the transmitted data. 
-This correlation can be exploited to inadvertently reveal sensitive information on the network, such as the video being streamed by the user \cite{schuster2017beautyburst} or the website the user is accessing \cite{bhat2019varcnn, wang2014supersequence}. 
-Similarly, in interconnects, an adversary can determine the workload running on the GPU, the keystrokes of the user, the webpage being visited by the user \cite{tan2021invisible}, the bitrate of a video being encoded/transcoded, or the initialisation of a new VM in a shared cloud environment \cite{giechaskiel2022cross}. 
-In the literature, such attacks that leak data based on the shape of the traffic are known as network side-channel attacks.
+Not-adaptive to application requirements:
+\cite{barradas2017deltashaper}
 
-Prior work has proposed various mitigations to defend against such network side-channel attacks. However, these solutions either require modifications on the end hosts [??], % portable
-only support certain types of traffic or protocols [??], % modular
-or have a high overhead and do not scale well with multiple users [??]. % scalable
-In addition, limited attention has been given to side channels in interconnects such as PCIe. 
-Existing work [??] has focused on saturating the PCIe bandwidth to carry out a side-channel attack. However, this approach leads to a loss in the granularity at which such attacks can extract data.
+Not application agnostic:
+\cite{cherubin2017llama, luo2011httpos}
 
-Interconnects, in general, can be thought of as networks that allow communication between different components of the same server. 
-They help the CPU communicate with the peripheral devices like the GPU, the network card, or the storage device. 
-Similar to traditional networks, the interconnects also transmit data in the form of packets and buffer them before sending out or when received.
-In the case of interconnects like PCIe, these buffers can be on the PCIe controller on the host, the device or a PCIe switch on the path.
-Just like the shared buffers on the NIC or switch in traditional networks, the PCIe controller buffers are shared between all applications or processes using the same communication path.
-
-Similar to the side-channel attack mechanism outlined in \ref{sec:network-side-channel-background}, the shared buffers on the PCIe controllers or switches can be exploited to observe the shape of the victim traffic that traverses the PCIe links.
-However, obtaining the shape of the victim traffic is challenging, given the high transmission rate and low latency of PCIe transactions compared to traditional networks.
-
+Hard to deploy:
+\cite{beckerle2022splitting, de2020trafficsliver}
