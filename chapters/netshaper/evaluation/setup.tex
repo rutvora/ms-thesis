@@ -1,0 +1,24 @@
+\subsection{Setup}
+\label{subsec:netshaper-evaluation-setup}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/netshaper/testbed-setup.png}
+    \caption{Evaluation Setup}
+    \label{fig:testbed-setup}
+\end{figure}
+
+Our setup consists of four desktops, each of which consists of 32GB RAM, 1TB storage, one Marvell AQC113CS-B1-C 10G NIC, and one Realtek RTL8111 1G NIC.
+We use the Realtek NIC only as a management NIC and do not run any experiments on it.
+Three of the desktops have an AMD Ryzen 7 7700X processor, and one has a more powerful AMD Ryzen 9 7900X processor, which we use as the server.
+The middleboxes are connected to each out via an additional Intel X550-T2 10G NIC.
+The client and the server are connected to their local middleboxes via the Marvell 10G NIC.
+This forms a linear topology, as outlined in \Cref{fig:testbed-setup}
+All the desktops run Ubuntu 22.04.02 (linux kernel version 5.19)
+
+All of our experiments contain a baseline setup (\textbf{Base}) wherein the client is directly connected to the server via the Marvell 10G NIC, bypassing the middleboxes.
+
+\endinput
+
+Mention iperf, wrk2 (modified), nginx?
+Maybe here maybe in the experiments themselves

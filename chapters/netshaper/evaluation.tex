@@ -1,6 +1,13 @@
 \section{Evaluation}
 \label{sec:netshaper-evaluation}
 
+We evaluate NetShaper on a variety of performance metrics.
+First, we evaluate the peak line rate that NetShaper can support. 
+Next, we evaluate the maximum throughput that the NetShaper middlebox can sustain.
+Then, we measure the latency that NetShaper's middlebox will incur without any traffic shaping.
+And finally, we measure the relation between NetShaper's latency and $W$ when traffic is being shaped.
+
+\input{chapters/netshaper/evaluation/setup}
 \input{chapters/netshaper/evaluation/max-packets}
 \input{chapters/netshaper/evaluation/max-data}
 % \input{chapters/netshaper/evaluation/masking}
