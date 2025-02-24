@@ -1,14 +1,17 @@
 \section{Threat Model}
 \label{sec:netshaper-threat-model}
 
+We assume that there are two end hosts transmitting some private data to each other.
+The attacker aims to exfiltrate this data by monitoring the publically accessible network link between the two.
 We assume that both the end hosts are connected to the internet via a gateway.
 We assume that the attacker can not compromise the end host, the gateway, or the communication link between the end host and the gateway.
-However, the attacker can precisely monitor all traffic flowing out or coming into the gateway from the public internet. 
+However, the attacker can precisely monitor all traffic going out from or coming into the gateway from the public internet. 
 As such, the attacker can precisely record the shape of the traffic flowing between the two gateways that the end-hosts are connected to.
 In addition, we do not preclude the attacker's ability to be able to drop or inject packets in the communication between the two gateways (i.e. the victim's traffic).
 However, we assume that the attacker is not capable of breaking standard encryption mechanisms.
 NetShaper's Trusted Computing Base (TCB) includes the gateways, the end hosts, the private network between the end host and the gateway, and the NetShaper system itself.
-NetShaper does consider the leakage of the public IP address of the communicating endpoints as a threat.
+As such, covert attacks [??] and co-location attacks [??], which require a compromised end host, are considered out of scope.
+NetShaper does not consider the leakage of the public IP address of the communicating endpoints as a threat.
 
 In addition, NetShaper does not address leaks caused by the traffic shape of a co-located application transmitting only non-sensitive data, and not using NetShaper.
 Such a leak can occur when microarchitectural interference can cause the sensitive traffic flow to impact the non-sensitive traffic flow. Mitigating this is beyond the scope of this thesis.

@@ -1,15 +1,7 @@
 \subsection{Network Side Channels}
 \label{subsec:netshaper-background-network-side-channels}
 
-Today, people rely on the internet for everyday tasks such as sending a message or calling friends, watching a video or movie, sharing files, accessing their bank accounts, or looking up their medical condition.
-As people using the internet may be transmitting or receiving sensitive information, it becomes necessary to protect these transmissions.
-
-While encryption can protect against eavesdroppers interested in obtaining sensitive information, encryption alone is insufficient.
-Encryption does not conceal the packet sizes and timing, which can be correlated with the sensitive information of the user. 
-An attacker can leverage this correlation to infer the sensitive information solely by observing the network link and obtaining the packet sizes and timing.
-Such attacks are called network side-channel attacks.
-
-With a network side-channel attack, an attacker wants to determine the contents of the web traffic being transmitted or received by the victim.
+With a network side-channel attack, an attacker wants to determine the contents of the web traffic being transmitted or received by the victim, by observing the shape of the transmitted traffic.
 More often than not, an attacker is interested in knowing if the victim accessed any content from a small subset and, if so, which content they accessed.
 To do this, the attacker follows these steps: 
 1) Collect network traces
@@ -29,7 +21,7 @@ If they own an element in the network path, they can directly observe all the fe
 Otherwise, they create congestion in the shared network path such that the victim's network traffic would contend with the attacker's traffic.
 In this case, the attacker's traffic would be delayed, and the delay would be proportional to the victim's traffic, thus revealing some features of the victim's traffic.
 The attacker could also have infiltrated the victim's machine, and maybe running a malicious application on that machine.
-The malicious application could be a javascript-based advertisement on the page the victim is visiting or another process on the victim's machine, thus gaining the ability to create contention on the network card in the victim's machine. 
+The malicious application could be a javascript-based advertisement on the page the victim is visiting [??] or another process on the victim's machine [??], thus gaining the ability to create contention on the network card in the victim's machine. 
 
 
 Once the attacker has access to the shared network path with the victim, they collect the network traces of their own traffic. and, based on that, extract the features of the victim's traffic flow.

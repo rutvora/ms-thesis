@@ -1,14 +1,13 @@
-\section{Introduction}
-\label{sec:netshaper-intro}
+% \section{Introduction}
+% \label{sec:netshaper-intro}
 
-Encryption has become the de-facto mechanism for protecting any communication over the internet. 
-While encryption conceals the data being transmitted, it does not conceal the metadata associated with the transmission itself, such as the packet sizes and timing (i.e. the traffic shape).
-As such, while encryption can prevent the leakage of data by direct observation of the communication, it does not prevent leaks caused by the observation of the metadata.
-
-In many applications, the traffic shape has a strong correlation with the data being transmitted.
+Encryption, which has become the de-facto mechanism for protecting communication over the internet, does not conceal the shape of the traffic.
+Prior work has demonstrated that in many applications, this traffic shape has a strong correlation with the data being transmitted.
 For example, webpages on the internet access different resources like CSS, javascript and images in a unique pattern which can be fingerprinted \cite{gong2010fingerprinting, bhat2019varcnn, wang2014supersequence}.
 Most videos that are streamed on the internet rely on the DASH standard \cite{dash2013}.
 As such, the videos are split into five-second segments, which are compressed individually and transmitted in a burst of traffic every five seconds, which can also be uniquely fingerprinted \cite{schuster2017beautyburst}.
+Attacks that exploit this correlation to reveal some information about the traffic being transmitted are known as network side-channel attacks.
+
 
 In order to mitigate network side-channel attacks, prior work has proposed various methods to modify the shape of the traffic to hide the correlation between the content of the traffic and the packet sizes and timing \cite{hou2020wf, nasr2021blind, rahman2020mockingbird, shan2021dolos, wang2017walkie, wright2009traffic, mehta2022pacer, zhang2019statistical, cai2014csbuflo}.
 However, prior work has focused less on the ease of adoption of these solutions. 
@@ -16,17 +15,23 @@ Some solutions only rely on simulations and do not provide a functional and depl
 Others require non-trivial modifications to the end host and either do no support or do not scale well with multiple users \cite{cai2014csbuflo, mehta2022pacer}.
 In addition, None of these systems have a modular design that can be easily extended to support more types of traffic and protocols.
 
-This chapter introduces the NetShaper system, a modular, portable, scalable network side-channel mitigation system.
-NetShaper is a modular Transport layer (L4) proxy that can be deployed on any compatible network middlebox.
+This chapter presents the NetShaper system, a modular, portable, scalable network side-channel mitigation system.
+NetShaper is a modular transport layer (L4) proxy tunnel that can be integrated with any network stack and within any node.
 Our system only requires the end-host to change their operating systems or browser's proxy configuration.
-NetShaper relies on a modular architecture, allowing easy modification of any system sub-component to support additional protocols or alternative implementations.
+NetShaper's modular architecture allows easy modification of any system sub-component to support additional protocols or alternative implementations.
 In order to support and scale with multiple clients, NetShaper relies on the QUIC protocol and assigns a QUIC stream to every client-server pair.
 
 The rest of the chapter is organised as follows:
 In \Cref{sec:netshaper-background}, we first provide a background on network side-channel attacks, how differential privacy can be used to mitigate such attacks, and how the QUIC protocol, which is fundamental to the scalability of NetShaper, works.
 In \Cref{sec:netshaper-threat-model}, we outline the Threat Model with which NetShaper works.
-We then outline the requirements that the NetShaper system should fulfil in \Cref{sec:netshaper-system-requirements}.
-\Cref{sec:netshaper-proxy-arch} and \Cref{sec:netshaper-middlebox-design} outline the system design and implementation of NetShaper.
+We then present the design of NetShaper's QUIC-based traffic shaping tunnel in \Cref{sec:netshaper-designing-traffic-shaping-tunnel}.
+\Cref{sec:netshaper-middlebox-implementation} outlines the system implementation of NetShaper.
 We evaluate the performance of NetShaper and provide the results in \Cref{sec:netshaper-evaluation}.
 We then discuss the limitations of NetShaper in \Cref{sec:netshaper-limitations}.
 Finally, we conclude the chapter by providing a comprehensive view of the related work and how NetShaper fares against them in \Cref{sec:netshaper-related-work}.
+
+\endinput
+
+Encryption has become the de-facto mechanism for protecting any communication over the internet. 
+While encryption conceals the data being transmitted, it does not conceal the metadata associated with the transmission itself, such as the packet sizes and timing (i.e. the traffic shape).
+As such, while encryption can prevent the leakage of data by direct observation of the communication, it does not prevent leaks caused by the observation of the metadata.
