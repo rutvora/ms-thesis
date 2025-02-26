@@ -1,2 +1,30 @@
-\section{Introduction}
-\label{sec:interconnect-sc-introduction}
+% \section{Introduction}
+% \label{sec:interconnect-sc-introduction}
+
+Interconnects facilitate high-speed and low-latency communication within and between processing units, memory, and peripheral devices like the GPU.
+While the evolution of interconnects has prioritised speed and latency, security has received less attention.
+On-chip interconnects do not have any encryption even today, while off-chip interconnects have only recently started focusing on encrypting the data in transit.
+For example, data transmitted off-chip to memory or another NUMA node is now encrypted when the user is using Intel's SGX/TDX or has AMD's SME or SEV enabled \cite{intel_upi_encryption, amd_gen_5_arch}.
+PCIe, which is used to communicate with peripheral devices, only introduced encryption with the PCIe v6.0 specifications 
+\footnote{PCIe v5.0 devices are only recently coming to market, and PCI-SIG has released an Engineering Change Notification (ECN) to optionally enable IDE for PCIe v5.0 \cite{pcie_ide_v5_ecn}}
+\cite{pcie_ide_v6}.
+Despite the recent focus on encrypting data in transit over the interconnects, little focus has been given to network-side channel attacks on interconnects, especially PCIe.
+
+Recent research has demonstrated that creating congestion in PCIe can help an adversary determine which website a user is visiting \cite{tan2021invisible, side2022lockeddown}, what the user is typing in a GUI environment or what machine learning model they are training \cite{tan2021invisible}, or what resources they are using on an FPGA connected via PCIe \cite{giechaskiel2022cross}.
+Recent work has also shown that congestion in PCIe can be used as a covert channel to exfiltrate data from a secure environment to a collaborator outside the environment \cite{giechaskiel2022cross, khaliq2021timing}.
+However, prior work has two limitations: 
+(i) All of them rely on a slower PCIe v3.0, and some of them even use an out-of-date processor that is highly constrained in terms of performance. 
+(ii) Most of them rely on creating congestion in a shared PCIe switch and do not create contention on a non-shared PCIe link.
+
+This chapter answers two important questions:
+(i) Is it possible to create congestion on a non-shared PCIe link in faster PCIe v4.0 and v5.0?
+(ii) Is it possible to create contention in non-shared PCIe links without the adversary saturating the PCIe bandwidth?
+
+The rest of the chapter is organised as follows.
+We begin by providing some relevant background on PCIe, the CPU architecture we work with, and interconnect side-channels in general in \Cref{sec:interconnect-sc-background}. 
+Then, we outline our threat model and our setup in \Cref{sec:interconnect-sc-threat-model} and \Cref{sec:interconnect-sc-setup}, respectively.
+We answer the research questions outlined above in \Cref{sec:interconnect-sc-store-ops} and \Cref{sec:interconnect-sc-dma}.
+Finally, we discuss the limitations of our approach in \Cref{sec:interconnect-sc-limitations} and how our approach compares to related work in \Cref{sec:interconnect-sc-related-work}.
+
+
+\endinput
