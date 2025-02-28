@@ -1,17 +1,17 @@
 \subsection{Network Side Channels}
 \label{subsec:netshaper-background-network-side-channels}
 
-With a network side-channel attack, an attacker wants to determine the contents of the web traffic being transmitted or received by the victim, by observing the shape of the transmitted traffic.
-More often than not, an attacker is interested in knowing if the victim accessed any content from a small subset and, if so, which content they accessed.
+With a network side-channel attack, an attacker wants to determine the contents of the web traffic being transmitted or received by the victim by observing the shape of the transmitted traffic.
+In most network-side channel attacks, such as website or video stream fingerprinting, the attacker is interested in knowing if the victim accessed any content from a small subset and, if so, which content they accessed \cite{bhat2019varcnn, dyer2012peek, hayes2016kfp, sirinam2018df, schuster2017beautyburst}.
 To do this, the attacker follows these steps: 
-1) Collect network traces
-2) Build a classifier trained on the collected network traces
-3) Gain access to the network shared with the victim
-4) Profile the victim's network traffic
+1) Collect network traces,
+2) Build a classifier trained on the collected network traces,
+3) Gain access to the network shared with the victim,
+4) Profile the victim's network traffic, and
 5) Determine whether the victim accessed any content of interest to the attacker
 
 First, the attacker builds a collection of the content (e.g. webpages and video streams) that they are interested in. 
-They collect network traces for this content under various network conditions to account for variability caused by the network itself. 
+They interact with the server(s) as a client and collect network traces for this content under various network conditions to account for variability caused by the network itself. 
 Then, the attacker trains a classifier on this collected network trace.
 The classifier can use multiple features like packer sizes, inter-packer timing, total bytes transferred in a burst of packets, the duration of the burst and the interval between bursts, and the direction of the bursts \cite{schuster2017beautyburst}.
 

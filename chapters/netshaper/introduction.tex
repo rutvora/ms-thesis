@@ -1,25 +1,25 @@
 % \section{Introduction}
 % \label{sec:netshaper-intro}
 
-Encryption, which has become the de-facto mechanism for protecting communication over the internet, does not conceal the shape of the traffic.
+Encryption, which has become the de-facto mechanism for protecting communication over the internet, does not conceal the shape of the traffic, leading to network side-channel attacks.
 Prior work has demonstrated that in many applications, this traffic shape has a strong correlation with the data being transmitted.
-For example, webpages on the internet access different resources like CSS, javascript and images in a unique pattern which can be fingerprinted \cite{gong2010fingerprinting, bhat2019varcnn, wang2014supersequence}.
-Most videos that are streamed on the internet rely on the DASH standard \cite{dash2013}.
-As such, the videos are split into five-second segments, which are compressed individually and transmitted in a burst of traffic every five seconds, which can also be uniquely fingerprinted \cite{schuster2017beautyburst}.
-Attacks that exploit this correlation to reveal some information about the traffic being transmitted are known as network side-channel attacks.
+For example, webpages on the internet access different resources like CSS, JavaScript and images in a unique pattern.
+This access pattern can be fingerprinted \cite{gong2010fingerprinting, bhat2019varcnn, wang2014supersequence}.
+Similarly, videos that are streamed on the internet can also be fingerprinted.
+Most streaming videos rely on the DASH standard \cite{dash2013}.
+As such, the videos are split into five-second segments, which are compressed individually and transmitted in a burst of traffic every five seconds, thus creating a unique fingerprint \cite{schuster2017beautyburst}.
 
 
-In order to mitigate network side-channel attacks, prior work has proposed various methods to modify the shape of the traffic to hide the correlation between the content of the traffic and the packet sizes and timing \cite{hou2020wf, nasr2021blind, rahman2020mockingbird, shan2021dolos, wang2017walkie, wright2009traffic, mehta2022pacer, zhang2019statistical, cai2014csbuflo, cherubin2017llama, luo2011httpos, smith2022qcsd, abusnaina2020dfd, cai2014tamaraw, gong2022surakav, juarez2016wtfpad, wang2014supersequence, wright2009morphing, barradas2017deltashaper}.
-Of these solutions, very few provide any deployable system to mitigate network side-channel attacks.
+While a lot of solutions have been proposed to mitigate network side-channel attacks, very few provide any concrete mitigation system.
 Of the ones that do provide deployable systems, many require non-trivial modifications to the end host and either do not support or do not scale well with multiple users \cite{cai2014csbuflo, cherubin2017llama, luo2011httpos, smith2022qcsd, wang2017walkie, mehta2022pacer}.
 Others are either not application agnostic or do not adapt to the application traffic \cite{barradas2017deltashaper, cherubin2017llama, luo2011httpos}.
-In addition, none of these systems have a modular design that can be easily extended to support additional types of traffic and additional protocols.
+In addition, these systems do not have a modular design that can be easily extended to support additional types of traffic and additional protocols.
 
 This chapter presents the NetShaper system, a modular, portable, scalable network side-channel mitigation system.
-NetShaper is a modular transport layer (L4) proxy tunnel that can be integrated with any network stack and within any node.
+NetShaper is a transport layer (L4) proxy tunnel that can be integrated with any network stack and within any node.
 Our system only requires the end-host to change their operating systems or browser's proxy configuration.
 NetShaper's modular architecture allows easy modification of any system sub-component to support additional protocols or alternative implementations.
-In order to support and scale with multiple clients, NetShaper relies on the QUIC protocol and assigns a QUIC stream to every client-server pair.
+To support and scale with multiple clients, NetShaper relies on the QUIC protocol and assigns a QUIC stream to every client-server pair.
 
 The rest of the chapter is organised as follows:
 In \Cref{sec:netshaper-background}, we first provide a background on network side-channel attacks, how differential privacy can be used to mitigate such attacks, and how the QUIC protocol, which is fundamental to the scalability of NetShaper, works.

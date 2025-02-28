@@ -1,11 +1,18 @@
 \subsection{Challenges}
 \label{subsec:interconnect-sc-store-ops-challenges}
 
-\subsubsection{Measuring time of asynchronous CPU instructions}
-\label{subsubsec:interconnect-sc-store-ops-challenges-measuring-time}
+Multiple store operations can be asynchronously issued on most modern processors as they support out-of-order execution. 
+However, the same out-of-order execution feature makes it difficult for the attacker to accurately measure a store operation's time since the timer instruction can also be executed out of order.
+To measure time accurately, most applications rely on issuing a fence instruction
+\footnote{A fence instruction imposes ordering constraints, thus ensuring that any instruction after the fence is not executed before \textit{all} instructions before the fence are executed}.
+However, this solution would not work for the attacker as the fence would not allow the next store instruction to be issued in parallel to the previous one, negating the benefit of using a posted (async) transaction.
+Hence, to measure the time of repeated instructions (store ops) that are executed out-of-order, we need to understand how the CPU core manages out-of-order execution.
 
 \subsubsection{Reverse Engineering the CPU architecture}
 \label{subsubsec:interconnect-sc-store-ops-challenges-reverse-engineering}
+
+\subsubsection{Measuring time of asynchronous CPU instructions}
+\label{subsubsec:interconnect-sc-store-ops-challenges-measuring-time}
 
 \subsubsection{Microcode Updates}
 \label{subsubsec:interconnect-sc-store-ops-challenges-microcode-updates}

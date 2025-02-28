@@ -1,2 +1,51 @@
 \subsection{PCIe}
 \label{subsec:interconnect-sc-background-pcie}
+
+Peripheral Component Interconnect Express (PCIe) is a high-speed, low-latency packet-based communication protocol used for connecting peripherals like GPUs, FPGAs, storage devices, and networking devices to the CPU. 
+In order to support high bandwidth and low latency, PCIe supports multiple lanes, where each lane can send data in both directions.
+Most PCIe implementations support 1, 2, 4, 8, or 16 lanes, represented as PCIe x1 - x16
+\footnote{PCIe x32 exists but is rarely utilised in commercial systems.}.
+
+The PCIe standard has evolved through multiple generations, each offering increased data transfer rates and improved efficiency for applications in computing, networking, and storage.
+Each major revision of the PCIe standard doubles the bandwidth supported by PCIe.
+As such, while PCIe v3.0 x16 supports 16 Gbps, PCIe v4.0 x16 doubles it to 32 Gbps, and PCIe v5.0 doubles it further to 64 Gbps.
+While PCIe v6.0 continue this trend, it also adds a lot of newer features, such as 256B FLIT mode, which ensures that each packet is exactly 256 bytes in size, allowing for deterministic processing and Forward Error Correction (FEC).
+PCIe v6.0 also introduces data encryption for data in transit on the PCIe interconnect.
+
+As PCIe protocol enables communication between the CPU and peripherals, it requires hardware support from the CPU in the form of the CPU's PCIe root complex.
+However, as the PCIe root complex resides on the CPU die, it becomes challenging to provide an arbitrarily large number of PCIe lanes originating from the CPU to support an arbitrarily large number of peripheral devices.
+In order to alleviate this problem, PCIe utilises either a PCIe Switch or a Platform Controller Hub (PCH) to form a tree-like topology.
+A PCIe switch has one upstream port that connects to either the CPU's root complex or another PCIe switch but has multiple downstream ports, each of which can consist of more PCIe switches or endpoints to connect the peripherals.
+A PCH is usually integrated within the CPU and provides PCIe access to slower endpoints such as storage, USB ports, and slow network cards such as the one built into the motherboard.
+
+Similar to network protocols, PCIe utilises a layered architecture consisting of the transaction layer, data link layer, and physical layer.
+PCIe provides reliable transfer semantics in the data link layer, which relies on Cyclic Redundancy Check (CRC) to detect errors and uses Acknowledgements (ACKs) or Negative Acknowledgements (NACKs) to inform the sender to re-transmit failed packets.
+The transaction layer of PCIe supports a fixed set of transactions, each of which has a specific communication behaviour.
+We provide a list of the transactions PCIe supports in \Cref{tab:pcie-transaction-types}, and a description of what each PCIe transaction type entails below: \\
+\textbf{Posted:} Transactions where no response is issued or expected. 
+These transactions are asynchronous and, hence, allow multiple transactions of the same kind to be in flight at the same time.
+For example, multiple posted memory writes can occur concurrently. \\
+\textbf{Non-posted:} Transactions where a response is required. 
+These types of transactions are also synchronous.
+As such, one can not execute multiple transactions of the same kind simultaneously.\\
+\textbf{Completions:} The completion of a previous non-posted transaction.\\
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|l|l|p{0.65\textwidth}|}
+        \hline
+        \textbf{Transaction} & \textbf{Type} & \textbf{Description} \\ 
+        \hline
+        Memory Read  & Non-Posted & Read from a memory-mapped address space \\ 
+        Memory Write & Posted     & Write to a memory-mapped address space  \\ 
+        I/O Read     & Non-Posted & (Legacy PCI) Read from the I/O address space \\ 
+        I/O Write    & Non-Posted & (Legacy PCI) Write to the I/O address space \\ 
+        Config Read  & Non-Posted & Read control and status registers of the PCIe interface \\ 
+        Config Write & Non-Posted & Write control and status registers of the PCIe interface \\  
+        Message      & Posted     & Conveys additional information (e.g. Interrupts, Power Management, Error Signalling, Vendor-defined messaging). \\
+        Completion   & Completion & Response to all non-posted transactions \\ 
+        \hline
+    \end{tabular}
+    \caption{PCIe transaction types}
+    \label{tab:pcie-transaction-types}
+\end{table}

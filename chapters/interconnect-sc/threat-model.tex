@@ -1,2 +1,17 @@
 \section{Threat Model}
 \label{sec:interconnect-sc-threat-model}
+
+We assume that a victim is transmitting some data over PCIe to a PCIe endpoint device, such as a GPU.
+The attacker aims to disclose some information regarding the data being transferred over this PCIe link.
+We assume that the attacker and the victim are co-located on the same physical server, as two processes or two VMs, and have access to the same PCIe endpoint device.
+However, on the CPU side, the attacker is isolated from the victim, such that the attacker and the victim do not share cores, caches, memory controllers or DRAM.
+On the PCIe endpoint device side, the attacker is also isolated from the victim by means of static partitioning such as the one offered by Nvidia's Multi-Instance GPU (MIG) functionality \cite{nvidia_mig_guide}.
+As such, the only shared component between the attacker and the victim is the communication pathway from the cores to the PCIe endpoint device, which consists of the PCIe root complex on the CPU and the endpoint device, and the PCIe link itself.
+
+We assume that the attacker is a regular tenant application on the shared physical server and does not possess the ability to modify or compromise the underlying isolation mechanism (such as the hypervisor).
+As such, the attacker does not have the ability to infiltrate or affect the victim's program and its execution.
+In addition, the attacker does not have the capability to modify the behaviour of the underlying hardware or directly monitor any components of the underlying hardware.
+
+\endinput
+
+Talk about superuser privilege for CPU store ops.

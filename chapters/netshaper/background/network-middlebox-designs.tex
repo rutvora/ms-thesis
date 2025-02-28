@@ -6,7 +6,7 @@ Middleboxes have been used in computer networks for various purposes, such as Ne
 A middlebox needs to be designed, implemented and deployed differently based on its application.
 
 There are certain trade-offs that need to be considered when designing and implementing network middleboxes.
-A network middlebox implemented in the hardware would be faster compared to the same implementation in software, primarily as the hardware would be purpose-built to achieve the singular task.
+A network middlebox implemented in the hardware would be faster compared to the same implementation in software, mainly because the hardware would be purpose-built to achieve the singular task.
 However, a hardware implementation would also render the middlebox relatively inflexible as it could only carry out a fixed pre-set list of functionality.
 On the other hand, while the software implementation of a middlebox would be slower, it would be more flexible, would support more complex features and can be easily modified or updated.
 As networking layers above the transport layer (L4) are complex, any network middlebox implementing functionality at L4 or higher requires a software implementation.
@@ -24,7 +24,7 @@ There are two major kinds of proxies: Forward Proxies and Reverse Proxies.
 A forward proxy sits between a client and external servers and intercepts all outbound traffic, modifying it if necessary and then forwarding it to the destination.
 Forward proxies are used for access control or content filtering, providing anonymity to the client, or enhancing application performance by caching frequently accessed content.
 A reverse proxy sits in front of a group of servers and is often used to load balance between multiple servers or cache the server data, reducing the workload on the server. 
-It can also be used as a firewall in order to defend the servers against malicious activity.
+It can also be used as a firewall to defend the servers against malicious activity.
 
 Proxies are usually implemented at either the transport layer (L4) or the application layer (L7).
 A proxy implemented at L7 deals with application-specific protocols.

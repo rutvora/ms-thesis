@@ -1,7 +1,7 @@
 \subsection{Measuring time of store operations}
 \label{subsec:interconnect-sc-store-ops-measuring-time}
 
-In order to measure the completion time of a store operation which is issued out-of-order, we make use of two key insights:
+To measure the completion time of a store operation which is issued out-of-order, we make use of two key insights:
 
 \textit{First}, the CPU core would need to keep track of all instructions executed out-of-order so that they are retired in program order.
 Keeping this track would require a scheduler and a buffer in the hardware, which would have a limited and fixed size.

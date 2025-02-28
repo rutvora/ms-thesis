@@ -4,6 +4,8 @@
 In terms of security, our implementation has three limitations.
 \textbf{First}, it relies on MSQUIC implementation of QUIC, which utilises OpenSSL, which may not provide constant time cryptography.
 However, this limitation can be easily remedied by modifying MSQUIC so that it uses a constant-time cryptography library such as WolfSSL \cite{wolfssl}.
-\textbf{Second}, it is difficult to profile for $T_{prep}$ and $T_{enq}$. If the time taken by the \textit{prepare} thread exceeds that of the profiled values, it violates our theoretical DP guarantees. 
+\textbf{Second}, it is difficult to profile for $T_{prep}$ and $T_{enq}$. 
+If the time taken by the \textit{Prepare} thread exceeds that of the profiled values, it violates our theoretical DP guarantees. 
 However, in practice, it is difficult to exploit these violations for carrying out traffic analysis based network side-channel attacks.
-\textbf{Third}, we currently require a custom configuration format supplied by the client to configure the destination for a connection. However, given the modular architecture of our system, one can easily implement UShaper as a SOCKS5 proxy \cite{leech1996socks} or any other standard proxy protocol.
+\textbf{Third}, we currently require a custom configuration format supplied by the client to configure the destination for a connection. 
+However, given the modular architecture of our system, one can easily implement \textit{UShaper} as a SOCKS5 proxy \cite{leech1996socks} or any other standard proxy protocol.

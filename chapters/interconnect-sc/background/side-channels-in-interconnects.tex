@@ -19,33 +19,6 @@ Most transaction types can not generate enough traffic to even come close to sat
 While saturating the bandwidth may not be necessary to create a side-channel attack, it would be useful if there is always at least one attacker packet in the buffer whenever the victim might transmit.
 This would ensure that the attacker can observe a delay in their own packets for each packet or set of packets the victim transmits.
 
-We provide a list of the transactions PCIe supports in \Cref{tab:pcie-transaction-types}, and a description of what each PCIe transaction type entails below: \\
-\textbf{Posted:} Transactions where no response is issued or expected. 
-These transactions are also asynchronous and hence allow multiple transactions of the same type to be in flight at the same time.\\
-\textbf{Non-posted:} Transactions where a response is required. 
-These types of transactions are also synchronous.
-As such, one can not execute multiple of these simultaneously.\\
-\textbf{Completions:} The completion of a previous non-posted transaction.\\
-
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|l|l|p{0.65\textwidth}|}
-        \hline
-        \textbf{Transaction} & \textbf{Type} & \textbf{Description} \\ 
-        \hline
-        Memory Read  & Non-Posted & Read from a memory-mapped address space \\ 
-        Memory Write & Posted     & Write to a memory-mapped address space  \\ 
-        I/O Read     & Non-Posted & (Legacy PCI) Read from the I/O address space \\ 
-        I/O Write    & Non-Posted & (Legacy PCI) Write to the I/O address space \\ 
-        Config Read  & Non-Posted & Read control and status registers of the PCIe interface \\ 
-        Config Write & Non-Posted & Write control and status registers of the PCIe interface \\  
-        Message      & Posted     & Conveys additional information (e.g. Interrupts, Power Management, Error Signalling, Vendor-defined messaging). \\
-        Completion   & Completion & Response to all non-posted transactions \\ 
-        \hline
-    \end{tabular}
-    \caption{PCIe transaction types}
-    \label{tab:pcie-transaction-types}
-\end{table}
 
 \endinput
 
