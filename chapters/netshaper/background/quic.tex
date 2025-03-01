@@ -13,7 +13,3 @@ Multiple such streams, with their headers, can be a part of a single encrypted Q
 This ensures that an observer can not determine the number of streams being transmitted in a QUIC packet just by observing the encrypted packet or traffic stream.
 
 
-\endinput
-
-\footnote{While QUIC has a PADDING frame, we don't use it, as a packet that only contains padding frames will not be re-transmitted in case of packet loss, thus revealing that it was a dummy packet.}
-

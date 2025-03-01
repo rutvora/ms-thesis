@@ -20,17 +20,34 @@ A PCH is usually integrated within the CPU and provides PCIe access to slower en
 
 Similar to network protocols, PCIe utilises a layered architecture consisting of the transaction layer, data link layer, and physical layer.
 PCIe provides reliable transfer semantics in the data link layer, which relies on Cyclic Redundancy Check (CRC) to detect errors and uses Acknowledgements (ACKs) or Negative Acknowledgements (NACKs) to inform the sender to re-transmit failed packets.
-The transaction layer of PCIe supports a fixed set of transactions, each of which has a specific communication behaviour.
-We provide a list of the transactions PCIe supports in \Cref{tab:pcie-transaction-types}, and a description of what each PCIe transaction type entails below: \\
+The transaction layer of PCIe supports a fixed set of transactions (see \Cref{tab:pcie-transaction-types}), each of which is one of the following three types:
 \textbf{Posted:} Transactions where no response is issued or expected. 
-These transactions are asynchronous and, hence, allow multiple transactions of the same kind to be in flight at the same time.
-For example, multiple posted memory writes can occur concurrently. \\
 \textbf{Non-posted:} Transactions where a response is required. 
-These types of transactions are also synchronous.
-As such, one can not execute multiple transactions of the same kind simultaneously.\\
-\textbf{Completions:} The completion of a previous non-posted transaction.\\
+\textbf{Completions:} The completion of a previous non-posted transaction.
+PCIe enforces strict ordering rules for each of these types, which we outline in \Cref{loremipsum}.
 
-\begin{table}[htb]
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{|l|l|p{0.65\textwidth}|}
+        \hline
+        \textbf{Transaction} & \textbf{Type} & \textbf{Description} \\ 
+        \hline
+        Memory Read  & Non-Posted & Read from a memory-mapped address space \\ 
+        Memory Write & Posted     & Write to a memory-mapped address space  \\ 
+        I/O Read     & Non-Posted & (Legacy PCI) Read from the I/O address space \\ 
+        I/O Write    & Non-Posted & (Legacy PCI) Write to the I/O address space \\ 
+        Config Read  & Non-Posted & Read control and status registers of the PCIe interface \\ 
+        Config Write & Non-Posted & Write control and status registers of the PCIe interface \\  
+        Message      & Posted     & Conveys additional information (e.g. Interrupts, Power Management, Error Signalling, Vendor-defined messaging). \\
+        Completion   & Completion & Response to all non-posted transactions \\ 
+        \hline
+    \end{tabular}
+    \caption{PCIe transaction types}
+    \label{tab:pcie-transaction-types}
+\end{table}
+
+
+\begin{table}[!htb]
     \centering
     \begin{tabular}{|l|l|p{0.65\textwidth}|}
         \hline

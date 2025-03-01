@@ -20,6 +20,7 @@ Prior work has demonstrated that in some applications, this metadata is strongly
 For example, attackers on the internet can identify the video a user is streaming \cite{schuster2017beautyburst} or the webpage they are visiting \cite{gong2010fingerprinting, wang2014supersequence}.
 Even when the data is being transmitted on an interconnect within a computer (e.g. from a CPU to a GPU or NIC), the corresponding metadata can reveal the user's text input or even the machine learning model being trained \cite{tan2021invisible}.
 In the literature, such attacks are commonly known as network side-channel attacks.
+
 Network side channels have been studied extensively in Internet networks.
 They can be used to classify the type of data being transferred \cite{shapira2019flowpic}, determine the website a client is visiting \cite{bhat2019varcnn, dyer2012peek, hayes2016kfp, sirinam2018df}, the video that a user is streaming \cite{schuster2017beautyburst}, what they are speaking on a video or VoIP call \cite{white2011phonotactic}, or even for covert communication \cite{barradas2020poking}.
 These attacks have also been explored to a limited extent in data centre networks.
@@ -47,12 +48,8 @@ In this thesis, we first present a modular, portable and scalable network side-c
 \footnote{NetShaper is both the name of a differential-privacy-based framework and a system that implements the framework. This thesis focuses on the NetShaper system.} \cite{sabzi2024netshaper}.
 Second, we demonstrate additional avenues that can be used to carry out side-channel attacks in interconnects and their caveats.
 
-% \input{chapters/introduction/contributions}
 
-% \section{Publications and Collaborations}\label{sec:collabs}
-
-
-\endinput
+\begin{comment}
 
 
 End-host modification (not scalable):
@@ -69,3 +66,5 @@ Not application agnostic:
 
 Hard to deploy:
 \cite{beckerle2022splitting, de2020trafficsliver}
+
+\end{comment}

@@ -79,5 +79,3 @@ Then, QUIC sends these prepared packets out by using the networking stack's UDP 
 \paragraph{Inbound traffic processing.}
 For incoming shaped packets, QUIC sends an ACK to the sender and decrypts the packet.
 The tunnel endpoint then processes the decrypted packet, drops the dummy bytes, and forwards the application data byte streams to the relevant remote applications.
-
-\endinput
