@@ -1,21 +1,16 @@
 \section{Evaluation}
 \label{sec:netshaper-evaluation}
 
-We evaluate NetShaper on a variety of performance metrics.
-First, we evaluate the peak line rate that NetShaper can support. 
-Next, we evaluate the maximum throughput that the NetShaper middlebox can sustain.
-Then, we measure the latency that NetShaper's middlebox will incur without any traffic shaping.
-And finally, we measure the relation between NetShaper's latency and $W$ when traffic is being shaped.
+In our evaluation, we answer the following questions:
+(i) Does NetShaper limit the bandwidth utilisation of the underlying network link?
+(ii) How many packets can NetShaper process per second?
+(iii) Does NetShaper throttle the end host application?
+(iv) What is the latency incurred by NetShaper (in relation to window $W$)?
+(v) How many parallel clients can NetShaper support?
 
 \input{chapters/netshaper/evaluation/setup}
-\input{chapters/netshaper/evaluation/max-packets}
-\input{chapters/netshaper/evaluation/max-data}
-% \input{chapters/netshaper/evaluation/masking}
-\input{chapters/netshaper/evaluation/impact-of-dp-loop-interval}
-
-\begin{comment}
-
-Mention HTTP request scaling?
-Mention client scaling
-
-\end{comment}
+\input{chapters/netshaper/evaluation/bw}
+\input{chapters/netshaper/evaluation/num-packets}
+\input{chapters/netshaper/evaluation/http-reqs}
+\input{chapters/netshaper/evaluation/num-clients}
+\input{chapters/netshaper/evaluation/latency}

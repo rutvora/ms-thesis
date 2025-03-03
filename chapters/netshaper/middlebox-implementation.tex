@@ -49,7 +49,7 @@ It also processes the received data, places it in the relevant LQ, and updates t
 % \footnote{\label{footnote:msquic-loc} Both \textit{UShaper} and \textit{DShaper} consist of the MSQUIC implementation of QUIC, which is 180k lines of code, and is a part of NetShaper's TCB.}.
 
 \subsection{Ensuring secret-independent shaping}
-\label{subsed:netshaper-secret-independent-shaping-implementation}
+\label{subsec:netshaper-secret-independent-shaping-implementation}
 
 To enforce DP guarantees, \textit{DShaper} needs to transmit $L + \eta$ bytes in every finite interval $W$.
 To achieve this, \textit{DShaper} should satisfy the following properties.

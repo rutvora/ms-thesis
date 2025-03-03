@@ -14,16 +14,11 @@ Three of the desktops have an AMD Ryzen 7 7700X processor, and one has a more po
 The middleboxes are connected to each out via an additional Intel X550-T2 10G NIC.
 The client and the server are connected to their local middleboxes via the Marvell 10G NIC.
 This forms a linear topology, as outlined in \Cref{fig:testbed-setup}
-All the desktops run Ubuntu 22.04.02 (linux kernel version 5.19)
+All the desktops run Ubuntu 22.04.02 (Linux kernel version 5.19)
 
-In all of our experiments, we do not place any restrictions on the client or the server applications.
-Unless otherwise specified, we restrict NetShaper to 4 CPU cores, one each for \textit{UShaper}, \textit{Prepare}, \textit{QUIC worker}, and the Linux kernel.
-All of our experiments contain a baseline setup wherein the client is directly connected to the server via the Marvell 10G NIC, bypassing the middleboxes.
-
-
-\begin{comment}
-
-Mention iperf, wrk2 (modified), nginx?
-Maybe here maybe in the experiments themselves
-
-\end{comment}
+In all of the experiments, we do not place any restrictions on the client or the server applications.
+All of the experiments contain a baseline setup wherein the client is directly connected to the server via the Marvell 10G NIC, bypassing the middleboxes.
+For experiments i and ii, we use \textit{iperf3} \cite{iPerf3} as the client and server application.
+For the rest of the experiments, we use \textit{Nginx} \cite{nginx} as the server and a modified 
+\footnote{The wrk2 is modified to send asynchronous HTTP requests, and also report individual latencies for each request.}
+wrk2 \cite{wrk2} as the client.
