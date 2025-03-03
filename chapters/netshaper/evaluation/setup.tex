@@ -16,7 +16,10 @@ The client and the server are connected to their local middleboxes via the Marve
 This forms a linear topology, as outlined in \Cref{fig:testbed-setup}
 All the desktops run Ubuntu 22.04.02 (linux kernel version 5.19)
 
-All of our experiments contain a baseline setup (\textbf{Base}) wherein the client is directly connected to the server via the Marvell 10G NIC, bypassing the middleboxes.
+In all of our experiments, we do not place any restrictions on the client or the server applications.
+Unless otherwise specified, we restrict NetShaper to 4 CPU cores, one each for \textit{UShaper}, \textit{Prepare}, \textit{QUIC worker}, and the Linux kernel.
+All of our experiments contain a baseline setup wherein the client is directly connected to the server via the Marvell 10G NIC, bypassing the middleboxes.
+
 
 \begin{comment}
 

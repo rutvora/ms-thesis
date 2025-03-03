@@ -42,7 +42,7 @@ Network side-channel attacks in interconnects have received far less attention.
 Most prior work relies on systems that are slow or highly constrained.
 Invisible Probe \cite{tan2021invisible} and Locked Down \cite{side2022lockeddown} both rely on PCIe v3.0, which offers half the bandwidth of PCIe v4.0.
 Invisible Probe \cite{tan2021invisible} and the FPGA-based attack by \citet{giechaskiel2022cross} both rely on creating contention in a PCIe switch or PCH that has multiple downlinks but only one uplink, resulting in the ability to easily create congestion.
-The work by \citet{khaliq2021timing} relies on an out-of-date desktop CPU that is highly constrained to create contention.
+The work by \citet{khaliq2021timing} relies on an out-of-date desktop CPU that is highly constrained in terms of performance to create contention.
 
 In this thesis, we first present a modular, portable and scalable network side-channel mitigation system called NetShaper 
 \footnote{NetShaper is both the name of a differential-privacy-based framework and a system that implements the framework. This thesis focuses on the NetShaper system.} \cite{sabzi2024netshaper}.

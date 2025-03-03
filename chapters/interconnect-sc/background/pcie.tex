@@ -18,13 +18,20 @@ In order to alleviate this problem, PCIe utilises either a PCIe Switch or a Plat
 A PCIe switch has one upstream port that connects to either the CPU's root complex or another PCIe switch but has multiple downstream ports, each of which can consist of more PCIe switches or endpoints to connect the peripherals.
 A PCH is usually integrated within the CPU and provides PCIe access to slower endpoints such as storage, USB ports, and slow network cards such as the one built into the motherboard.
 
-Similar to network protocols, PCIe utilises a layered architecture consisting of the transaction layer, data link layer, and physical layer.
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/interconnect-sc/pcie-controller.png}
+    \caption{Simplified PCIe controller}
+    \label{fig:pcie-controller}
+\end{figure}
+
+Similar to network protocols, PCIe utilises a layered architecture consisting of the transaction layer, data link layer, and physical layer, which are implemented in a PCIe controller (see \Cref{fig:pcie-controller}).
 PCIe provides reliable transfer semantics in the data link layer, which relies on Cyclic Redundancy Check (CRC) to detect errors and uses Acknowledgements (ACKs) or Negative Acknowledgements (NACKs) to inform the sender to re-transmit failed packets.
 The transaction layer of PCIe supports a fixed set of transactions (see \Cref{tab:pcie-transaction-types}), each of which is one of the following three types:
 \textbf{Posted:} Transactions where no response is issued or expected. 
 \textbf{Non-posted:} Transactions where a response is required. 
 \textbf{Completions:} The completion of a previous non-posted transaction.
-PCIe enforces strict ordering rules for each of these types, which we outline in \Cref{loremipsum}.
+PCIe enforces strict ordering rules for each of these types, which we outline in \Cref{tab:pcie-transaction-ordering-rules}.
 
 \begin{table}[!htb]
     \centering
@@ -49,20 +56,33 @@ PCIe enforces strict ordering rules for each of these types, which we outline in
 
 \begin{table}[!htb]
     \centering
-    \begin{tabular}{|l|l|p{0.65\textwidth}|}
+    \begin{tabular}{|c|c|c|c|c|}
         \hline
-        \textbf{Transaction} & \textbf{Type} & \textbf{Description} \\ 
+        Row Pass Column? & Posted & \makecell{Non-posted \\ Read} & \makecell{Non-posted \\ Write} & Completion \\
+        
         \hline
-        Memory Read  & Non-Posted & Read from a memory-mapped address space \\ 
-        Memory Write & Posted     & Write to a memory-mapped address space  \\ 
-        I/O Read     & Non-Posted & (Legacy PCI) Read from the I/O address space \\ 
-        I/O Write    & Non-Posted & (Legacy PCI) Write to the I/O address space \\ 
-        Config Read  & Non-Posted & Read control and status registers of the PCIe interface \\ 
-        Config Write & Non-Posted & Write control and status registers of the PCIe interface \\  
-        Message      & Posted     & Conveys additional information (e.g. Interrupts, Power Management, Error Signalling, Vendor-defined messaging). \\
-        Completion   & Completion & Response to all non-posted transactions \\ 
+        Posted & \makecell{a) N $^{i}$ \\ b) X}
+        & Y & Y & \makecell{a) X \\ b) Y } \\
+        
         \hline
+        \makecell{Non-posted \\ Read} & \makecell{a) N \\ b) X} & X & X & X \\
+        
+        \hline
+        \makecell{Non-posted \\ Write} & \makecell{a) N \\ b) X} & X & X & X \\
+        
+        \hline
+        Completion & \makecell{a) N \\ b) X} & Y & Y & \makecell{a) X \\ b) N} \\
+        \hline
+    
     \end{tabular}
-    \caption{PCIe transaction types}
-    \label{tab:pcie-transaction-types}
+    \footnotesize{$^i$Memory Writes and Messages have a "Relaxed Ordering" bit, which overrides this behaviour, allowing one transaction to pass another.} 
+    \caption{
+    PCIe transaction ordering rules. 
+    \textbf{Y:} Row transaction must be allowed to pass column transaction. 
+    \textbf{N:} Row transaction must not pass column transaction. 
+    \textbf{X:} No ordering rules.
+    \textbf{a):} Default behaviour.
+    \textbf{b):} Exception based on specific header values.
+    }
+    \label{tab:pcie-transaction-ordering-rules}
 \end{table}
