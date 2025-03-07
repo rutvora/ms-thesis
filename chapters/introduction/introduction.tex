@@ -33,18 +33,14 @@ They can also be used for covert channel communication \cite{khaliq2021timing, g
 
 To defend against network side-channel attacks in Internet and datacenter networks, several solutions have been proposed. 
 However, many of the proposed defences rely only on simulations and do not provide concrete mitigation systems \cite{abusnaina2020dfd, cai2014tamaraw, gong2022surakav, hou2020wf, juarez2016wtfpad, nasr2021blind, rahman2020mockingbird, shan2021dolos, wang2014supersequence, wright2009morphing}.
-Of those that do provide concrete systems, some are not easily deployable \cite{cai2014csbuflo, mehta2022pacer, smith2022qcsd, wang2017walkie}, do not scale well with an increasing number of end hosts \cite{luo2011httpos, cai2014csbuflo, smith2022qcsd, wang2017walkie, cherubin2017llama, barradas2017deltashaper}, or do not support a variety of applications \cite{luo2011httpos, wang2017walkie, cherubin2017llama}.
-% For example, some solutions require end-host modifications and do not scale well with the number of clients \cite{cai2014csbuflo, cherubin2017llama, luo2011httpos, smith2022qcsd, wang2017walkie, mehta2022pacer}. 
-% Cs-BUFLO \cite{cai2014csbuflo} relies on OpenSSH and requires modifying the OpenSSH library on the end host. 
-% Walkie-talkie \cite{wang2017walkie} relies on a modification to the browser of the client.
-% Pacer \cite{mehta2022pacer} requires modification to the hypervisor and the kernel of the guest VM.
-% Others are either not application agnostic or do not adapt to the bandwidth and latency requirements of the application \cite{cherubin2017llama, luo2011httpos, barradas2017deltashaper}.
+Of those that do provide concrete systems, some are hard to deploy \cite{cai2014csbuflo, mehta2022pacer, smith2022qcsd, wang2017walkie}, do not scale well with more end hosts \cite{luo2011httpos, cai2014csbuflo, smith2022qcsd, wang2017walkie, cherubin2017llama, barradas2017deltashaper}, or do not support a variety of applications \cite{luo2011httpos, wang2017walkie, cherubin2017llama}.
+
 
 Network side-channel attacks in interconnects have received far less attention.
 Most prior work focusing on network side-channels in the peripheral component interconnect express (PCIe) interconnect relies on systems that are slow or highly constrained.
 Invisible Probe \cite{tan2021invisible} and Locked Down \cite{side2022lockeddown} both rely on PCIe 3.0, which offers half the bandwidth of PCIe 4.0 \cite{pcie_3_v_4}.
 Invisible Probe \cite{tan2021invisible} and the FPGA-based attack by \citet{giechaskiel2022cross} both rely on creating contention in a PCIe switch or the platform controller hub (PCH) 
-\footnote{A PCH is a controller that is used to share a single PCIe upstream link with multiple slow devices such as hard disks and USBs.}
+\footnote{A PCH is used to share a PCIe upstream link with multiple slow devices such as hard disks.}
 that has multiple downlinks but only one uplink, resulting in the ability to easily create congestion.
 The work by \citet{khaliq2021timing} relies on an out-of-date desktop CPU that is highly constrained in terms of performance to create contention.
 

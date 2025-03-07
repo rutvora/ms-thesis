@@ -70,8 +70,8 @@ The first prepares the shaped buffer, which remains locked for $T_{prep}$.
 The second enqueues this buffer to the \textit{QUIC worker} and remains locked for $T_{enq}$.
 NetShaper locks the second critical section to ensure that the \textit{QUIC worker} does not start preparing the packets and transmitting them immediately.
 As such, the \textit{QUIC worker} thread receives the shaped buffer only at regular time intervals.
-We empirically profile the time taken by the \textit{Prepare} thread for $T_{prep}$ and $T_{enq}$ for buffers of various lengths and set the values to the maximum observed, with an additional margin on top.
-We have outlined pseudo-code for both the \textit{Prepare} thread and the \textit{QUIC worker} thread in \Cref{lst:prepare_and_worker}.
+We empirically profile the time taken by the \textit{Prepare} thread for $T_{prep}$ and $T_{enq}$ for buffers of various lengths and set the values to the maximum observed, plus some margin.
+We outline the pseudo-code for both the \textit{Prepare} and the \textit{QUIC worker} threads in \Cref{lst:prepare_and_worker}.
 
 
 To ensure further isolation, the \textit{Prepare} and \textit{QUIC worker} threads each run on separate physical cores.
@@ -80,9 +80,9 @@ We assume that QUIC's encryption and decryption time correlates only with the sh
 
 
 
-\begin{minipage}{\textwidth}
+% \begin{minipage}{\textwidth}
 \lstinputlisting[language=Python]{code/netshaper/prepare_and_worker.py}
 \captionsetup{type=lstlisting}
 \caption{Pseudo-code of the \textit{Prepare} and \textit{QUIC Worker} threads}
 \label{lst:prepare_and_worker}
-\end{minipage}
+% \end{minipage}

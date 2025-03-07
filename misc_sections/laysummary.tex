@@ -2,11 +2,14 @@
 
 % Limit to 150-ish words
 
-\paragraph{} Communication networks, whether the internet or hardware interconnects like PCIe (which connect components inside a computer), play a crucial role in modern computing. 
-Although they operate at different levels, both are used to transfer data and can be vulnerable to side-channel attacks, which leak unintended information.
+\paragraph{} 
+Communication networks play a crucial role in modern computing, whether they connect two machines on opposite ends of the world (i.e., using the Internet) or two components in your laptop (i.e., using an interconnect). 
+No matter the scale of the communication network, it is paramount to ensure the security and privacy of the data being transmitted.
+While encryption secures the content of data, it does not hide the behaviour of the traffic itself.
+A malicious observer can monitor this traffic behaviour and recover the contents of the encrypted transmission.
+We refer to this observability as a \textit{side channel}.
 
-This research looks at security risks in both types of networks and explores their similarities. 
-The first part focuses on reducing side-channel attacks in internet-like networks with a scalable solution that allows users to balance security with performance trade-offs like latency and bandwidth. 
-The second part examines whether similar attacks can happen in PCIe interconnects.
-
-By drawing similarities between the two types of attacks, we provide a unified perspective on securing communication networks against side-channel threats.
+We examine security risks that emerge in both the Internet and interconnect networks.
+We first present a solution that makes side channel exploitation impossible in Internet networks.
+Our solution provides the users with the ability to trade-off between security and performance.
+Then, we present new vulnerabilities that can be exploited by an adversary for a side-channel attack in interconnects.

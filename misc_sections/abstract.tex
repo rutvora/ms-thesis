@@ -3,21 +3,13 @@
 
 \chapter{Abstract}
 
-\paragraph{} Communication networks, whether traditional computer networks or hardware interconnects such as PCIe, serve as the backbone for disaggregated computing. 
-Despite their differences in scale and implementation, both facilitate data exchange and are vulnerable to side-channel attacks that can cause unintended information leakage. 
-We explore side-channel security across the two domains of internet networks and hardware interconnects, drawing parallels between them. 
+\paragraph{} 
 
-We first focus on a scalable solution that can mitigate side-channel attacks in internet-like networks while providing the user with the facility to customise their own trade-offs between the side-channel mitigation guarantees, bandwidth overhead, and latency overhead.
+In today's interconnected world, the protection of data during transmission is crucial to maintaining privacy and security. 
+While encryption effectively secures the contents of transmitted data, it fails to conceal associated metadata, such as packet sizes and timings, which can be exploited in network side-channel attacks. 
+These attacks have been widely studied in Internet and data centre networks but are under-explored in interconnects.
 
-The second part draws a parallel between existing network side-channel attacks and explores whether similar attacks can occur on modern PCIe interconnects.
-By analysing commonalities in attack surfaces, this work provides a unified perspective on securing communication networks against side-channel threats.
-
-The findings contribute to the broader goal of designing more resilient and secure communication mechanisms.
-
-\begin{comment}
-
-The first part of this research focuses on mitigating side-channel attacks in traditional networks, proposing defences that minimise information leakage while preserving performance. 
-
-The second part examines interconnects like PCIe, identifying side-channel vulnerabilities and developing detection mechanisms. 
-
-\end{comment}
+We first present NetShaper, a modular and scalable system designed to mitigate network side-channel attacks in Internet networks.
+NetShaper provides the user with the facility to customise their own trade-offs between the side-channel mitigation guarantees, bandwidth overhead, and latency overhead.
+Secondly, we present new attack vectors in the PCIe interconnect that do not necessitate saturating the PCIe link.
+These findings contribute to the broader goal of designing more resilient and secure communication mechanisms.
