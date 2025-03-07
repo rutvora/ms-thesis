@@ -4,7 +4,7 @@ res = [] * ITERATIONS  # Pre-allocated array
 
 # Profiling
 for i in range(ITERATIONS):
-    mfence() # Ensure all previous instructions are completed
+    mfence() # Ensure all previous memory instructions are completed
     start = now()
     load/store 1
     .

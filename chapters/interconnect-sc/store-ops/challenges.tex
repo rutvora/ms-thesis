@@ -4,55 +4,76 @@
 
 \subsubsection{Determining the right PCIe resource and instruction combination}
 
-Of the transaction types outlined in \Cref{tab:pcie-transaction-types}, a software application can only generate a configuration or memory read and write on a modern system that only has PCIe devices
+Of the transaction types outlined in \Cref{tab:pcie-transaction-types}, a software application can only generate configuration read and write, and memory read and write on a modern system that only has PCIe devices
 \footnote{I/O reads and writes may be available if a legacy PCI device is attached.
-Messages and Completions are not controlled by the software application and, hence, can not be generated directly.}.
-However, it is sufficient to explore only memory reads and writes as possible transactions since memory reads and configuration reads and writes are all non-posted transactions and will follow the same ordering rules.
+The software application does not control messages and Completions and, hence, can not be generated directly by the adversary.}.
+However, exploring only memory reads and writes as transactions an attacker can use is sufficient. 
+Memory reads, configuration reads, and configuration writes are non-posted transactions that follow the same ordering rule and, hence, would have the same behaviour on the interconnect.
 
-We use a program that follows the pseudocode outlined in \Cref{lst:pcie-mem-reads-v-writes}
-\footnote{\textit{mfence} on AMD CPUs is fully serialising and ensures all instructions, not just memory operations, finish before the barrier.}
-to profile for the execution time of \textit{load} and \textit{store} instructions.
-As we can see in \Cref{fig:pcie-mem-reads-v-writes}, the execution time of memory loads (and hence non-posted transactions) increases linearly with the number of memory loads issued.
-This is because a load operation has to wait for a previous load operation to complete 
-\footnote{While this is not enforced by PCIe ordering rules, it may be enforced by the PCIe controller implementation}.
-This hampers the attacker's ability to always have one pending packet in the PCIe controller, which can only be delayed by the victim's traffic.
-However, that is not the case for memory stores, and as such, we determine that memory stores are the correct type of transaction for the attacker.
+To profile the execution time of memory \textit{load} and \textit{store} instructions, we use a program that follows the pseudocode outlined in \Cref{lst:pcie-mem-reads-v-writes}.
+As we can see in \Cref{fig:pcie-mem-reads-v-writes}, the execution time of memory loads (and consequently, non-posted transactions) increases linearly with the number of memory loads issued.
+Each \textit{load} instruction takes about 2000 cycles, which is 625ns on a processor with a base clock of 3.2GHz.
+Most of the 625ns latency is composed of PCIe transfer time \cite{neugebauer2018understanding}.
+This is because a \textit{load} operation has to wait for a previous \textit{load} operation to complete 
+\footnote{While this is not enforced by PCIe ordering rules, it may be enforced by the proprietary PCIe controller implementation.}.
+Since each \textit{load} instruction must wait for the previous one to complete, the attacker cannot guarantee a packet is always ready in the PCIe controller for transmission when the victim is simultaneously transmitting.
+However, a memory store (and hence a posted transaction) does not have to wait for a previous store to complete.
+As such, we determine that memory stores are the correct type of transaction for the attacker.
 
-\begin{minipage}{\textwidth}
-\lstinputlisting[language=Python]{code/interconnect-sc/pcie-mem-reads-v-writes.py}
-\captionsetup{type=lstlisting}
-\caption{Pseudo-code for profiling of the execution time of load and store instruction on PCIe memory}
-\label{lst:pcie-mem-reads-v-writes}
-\end{minipage}
-
+The \textit{mfence} instruction in \Cref{lst:pcie-mem-reads-v-writes} ensures prior \textit{store} operations complete before the \textit{mfence} does.
+However, it disrupts the attacker from issuing a continuous stream of \textit{store} operations.
+Simply removing the \textit{mfence} from the code is not sufficient, as then the end \textit{timer} may execute out of order with respect to the issued \textit{store} operations, giving a false execution time.
+To fix this, the attacker needs a mechanism that can issue as many \textit{store} instructions as possible while having the ability to time the completions at the level of each instruction.
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=\columnwidth]{figures/interconnect-sc/pcie_mem_reads_v_writes.png}
+    \includegraphics[width=\columnwidth]{figures/interconnect-sc/store-ops/pcie_mem_reads_v_writes.png}
     \caption{Comparison: PCIe memory reads vs writes}
     \label{fig:pcie-mem-reads-v-writes}
 \end{figure}
 
-\subsubsection{Issuing and timing a continuous stream of store instructions}
+\begin{minipage}{\textwidth}
+    \lstinputlisting[language=Python]{code/interconnect-sc/pcie-mem-reads-v-writes.py}
+    \captionsetup{type=lstlisting}
+    \caption{Profiling the execution time of \textit{load/store} instruction.
+    Each \textit{load} or \textit{store} instruction is issued on a unique memory address which is more than 64 bytes from the previous address.}
+    \label{lst:pcie-mem-reads-v-writes}
+\end{minipage}
+
+\subsubsection{Issuing and timing a continuous stream of \textit{store} instructions}
 \label{subsubsec:interconnect-sc-store-ops-challenges-measuring-time}
 
-The code in \Cref{lst:pcie-mem-reads-v-writes} contains an \textit{mfence} instruction, which ensures that the \textit{store} operations before the instruction have been completed before the \textit{mfence} instruction completes.
-However, this prohibits the attacker from having a continuous, steady stream of \textit{store} operations (which helps ensure that there is always one pending packet in the PCIe controller).
-Simply removing the \textit{mfence} from the code is not sufficient, as then the end timer may execute out-of-order with respect to the issued stores, giving a false execution time.
-To fix this, the attacker needs a mechanism that can issue as many \textit{store} instructions as possible while having the ability to time the completions at the level of each instruction.
+To measure the completion time of a \textit{store} operation which is issued out-of-order, we make use of two key insights:
 
-As discussed in \Cref{subsec:interconnect-sc-background-cpu-arch}, the CPU cores have a fixed capacity of 24 instructions per scheduler and an additional 64 stores capacity in the load-store unit (LSU).
-Any instruction that is not yet in the schedulers can not be executed out-of-order until it gets a slot in the scheduler.
-We leverage this behaviour of the CPU to develop a mechanism that can issue multiple \textit{store} instructions while having the ability to time individual completions.
+\textit{First}, the CPU core would need to keep track of all instructions executed out-of-order so that they are retired in program order.
+Keeping this track would require a scheduler and a buffer in the hardware, which would have a limited and fixed size.
+The AMD CPU has four schedulers as described in \Cref{subsubsec:interconnect-sc-background-cpu-arch-pipelines}. Each scheduler has a fixed number of instruction slots, $size_{sched}$.
+In addition, for tracking \textit{load} and \textit{store} operations that are in flight, the CPU also has a load-store queue (LSQ), with a fixed number of slots for loads ($size_{ldq} = 72$) and for stores ($size_{stq} = 64$) \cite{amd_7003_software_optimization_guide}.
+Suppose the total number of pending (in flight) \textit{store} instructions is larger than the total size of the scheduler slots and the store queue. 
+In that case, the next instruction will be blocked until one (or more) of the previous instructions finishes.
+\textit{Second}, as the \textit{store} instructions may be executed out of program order, the attacker needs to observe the completion of the first \textit{store} instruction that was executed and not the first one by program order.
+% As discussed in \Cref{subsec:interconnect-sc-background-cpu-arch}, each scheduler on the CPU core has a capacity of holding 24 instructions.
+% Any instruction that is not yet in the scheduler can not be executed out of order until it gets a slot in one of the schedulers.
+% We leverage this behaviour of the CPU to develop a mechanism that can issue multiple \textit{store} instructions while having the ability to time individual completions.
 
-If we issue $N$ \textit{store} instructions, which can completely fill the \textit{store} unit and the schedulers, the next instruction will have to wait until one of the previously issued \textit{store} operations have been completed.
-As the AMD CPU can issue 2 stores per cycle, it can issue $N = 3 * 24 + 64 = 136$ instructions in 68 cycles, which is an order of magnitude less than the time to complete one store (see \Cref{fig:pcie-mem-reads-v-writes}).
-This guarantees that no \textit{store} instruction would be completed before the entire store unit and all the scheduler slots are filled.
-Any instruction issued after the $N$ stores will not be executed until one of the stores finishes.
-Hence, follow with a continuous stream of $timer...store$ pairs, where the timer gets executed out of order as soon as one of the previous stores retires, and the \textit{store} fills up the empty scheduler slot again, blocking the next $timer...store$ pair.
-We outline the pseudo-code for this algorithm in \Cref{lst:measuring-time}.
-\Cref{fig:loremipsum} shows the outcome of running this algorithm for various $N$ values. 
-As we can see, the measured time difference changes more after reaching a threshold value.
+We can use the first insight to queue a \textit{timer} instruction immediately after issuing $size_{sched} + size_{stq}$ stores, and that \textit{timer} will execute only after a \textit{store} instruction has been completed.
+To achieve this, we need to ensure that we can issue $N = 3 * size_{sched} + size_{stq}$ 
+\footnote{Only three schedulers have an address generation unit (AGU), which also triggers \textit{load/store} operations.}
+\textit{store} instructions in $t_{cpu} < 600~cycles$ (see \Cref{fig:pcie-mem-reads-v-writes}), to ensure that the CPU pipeline is filled before the first \textit{store} instruction retires.
+As the AMD CPU can issue 2 \textit{store} instructions per cycle \cite{amd_7003_software_optimization_guide}, $t_{cpu} = N/2$
+\footnote{AMD Zen 3 schedulers have $\sim$22-24 slots per scheduler \cite{gast2023squip}. Hence, if $size_{sched} = 24$, $N = 3 * 24 + 64 = 136$, and $t_{cpu} = N/2 = 68~cycles$.}.
+
+Now, after the initial $N$ stores, if we issue a continuous stream of (\textit{timer}...\textit{store}) pairs, the \textit{timer} from the pair will only be executed once a previous \textit{store} retires.
+As this \textit{timer} instruction will be executed immediately (out of order with the other stores), the \textit{store} in this pair will almost immediately occupy the now available scheduler slot, blocking the next \textit{timer}.
+Thus, the difference in the results of the two \textit{timer} instructions reflects the variation in retirement times of consecutive \textit{store} instructions.
+As the retirement times of the \textit{store} instructions are impacted by the PCIe transaction time, the attacker can use this mechanism to determine the presence or absence of victim traffic on PCIe.
+We measure the time taken for various values of $N$ using the pseudo-code in \Cref{lst:measuring-time}
+As we can see in \Cref{fig:measuring-store-time}, the measured time difference significantly increases after $N = 81$, validating this approach.
+
+% However, we also observe that after $N = 81$, the stores retire in groups of $8$ instead of retiring individually.
+% This can be an effect of some write-combining feature of the hardware.
+% While the AMD CPU has a write-combining buffer immediately after the LSU, we explicitly rely on a PCIe resource marked as non-write-combining by Linux, which should prevent the hardware from relying on this buffer.
+
 
 \begin{minipage}{\textwidth}
 \lstinputlisting[language=Python]{code/interconnect-sc/measuring-time.py}
@@ -61,9 +82,40 @@ As we can see, the measured time difference changes more after reaching a thresh
 \label{lst:measuring-time}
 \end{minipage}
 
-\subsubsection{Reverse Engineering the CPU architecture}
-\label{subsubsec:interconnect-sc-store-ops-challenges-reverse-engineering}
-
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/interconnect-sc/store-ops/measuring_store_time.png}
+    \caption{Using head-of-line blocking in CPU pipeline to measure completion time of asynchronous stores.
+    The timer is not executed out of order after a threshold number of \textit{store} instructions.}
+    \label{fig:measuring-store-time}
+    % 2025-03-04_15-28
+\end{figure}
 
 \subsubsection{Microcode Updates}
 \label{subsubsec:interconnect-sc-store-ops-challenges-microcode-updates}
+However, the behaviour of the CPU observed in \Cref{fig:measuring-store-time} is dependent on the microcode the CPU is running.
+The CPU microcode can change how the CPU behaves.
+For example, the microcode may change how the schedulers schedule the instructions out of order, how the LSU tracks the stores in flight, or how the write-combining buffers combine multiple \textit{store} instructions for efficient usage of the interconnects.
+
+The results in \Cref{fig:measuring-store-time} are based on the microcode patch 0x0A0011D5 (for AMD EPYC 3rd gen 19h B1 processors) released on May 03, 2024 to address CVE-2023-31315 \cite{amd_microcode_update}.
+Prior to this update (i.e. microcode patch 0x0a0011d3
+\footnote{AMD does not offer changelogs for their microcode, and hence we are unable to confirm what CPU behaviour changed between the given versions.}
+), the results were as shown in \Cref{fig:measuring-store-time-before-microcode-update}.
+Here, $N = 120$, instead of $N = 80$. 
+In addition, after the threshold of $N$, the stores complete in groups of $8$ instead of retiring individually.
+This may be caused by unexpected behaviour of the write-combining (WC) buffers that are present after the LSU in the CPU pipeline.
+The usage of the WC buffers also explains the high variation in the execution time measured, as the WC buffer combines writes based on certain threshold differences between the target addresses \cite{amd_7003_software_optimization_guide}, which are dependent on the order in which the stores were issued.
+While we ensure that Linux marks the PCIe resource as a memory type that does not allow write-combining, the CPU may still be using these buffers unexpectedly.
+
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/interconnect-sc/store-ops/measuring_store_time_before_microcode_update.png}
+    \caption{Using head-of-line blocking in CPU pipeline to measure completion time of asynchronous stores.
+    The timer is not executed out of order after a threshold number of \textit{store} instructions.}
+    \label{fig:measuring-store-time-before-microcode-update}
+    % 2024-10-12_18-07
+\end{figure}
+
+% \subsubsection{Reverse Engineering the CPU architecture}
+% \label{subsubsec:interconnect-sc-store-ops-challenges-reverse-engineering}

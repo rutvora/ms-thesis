@@ -1,14 +1,32 @@
-\subsection{Measuring time of store operations}
+\subsection{Using \textit{store} operations to observe presence/absence of victim traffic on PCIe}
 \label{subsec:interconnect-sc-store-ops-measuring-time}
+Now, we have a mechanism to issue multiple \textit{store} instructions in parallel while timing the completion of an individual (or a small group of) \textit{store} instructions.
+We can use this mechanism along with the threshold of $N = 81$ to observe the presence or absence of victim traffic in the PCIe controller.
+To achieve this, we execute the pseudo-code outlined in \Cref{lst:timing-victim-with-stores} while the victim transfers a large amount of data to or from the GPU via DMA
+\footnote{Since most GPU-based applications rely on the DMA engine for efficient transfers, we assume that the victim uses DMA.}.
 
-To measure the completion time of a store operation which is issued out-of-order, we make use of two key insights:
+To evaluate our ability to detect victim traffic, we run the adversary for $10^5$ iterations.
+At the same time, we execute the victim, which repeatedly (for $10^4$ iterations) performs a DMA transfer of either 4KB or 4MB
+The 4KB transfer does not saturate the PCIe link, while the 4MB transfer saturates the PCIe link (see \Cref{fig:bw-util-and-time-per-size}).
+Additionally, we synchronise the execution of the critical code sections responsible for data transfers between the victim and the adversary. 
+This synchronisation allows us to measure whether we can detect the presence or absence of victim traffic, even though such perfect alignment is unrealistic for a side-channel attack.
 
-\textit{First}, the CPU core would need to keep track of all instructions executed out-of-order so that they are retired in program order.
-Keeping this track would require a scheduler and a buffer in the hardware, which would have a limited and fixed size.
-The AMD CPU has four schedulers as described in \Cref{subsubsec:interconnect-sc-background-cpu-arch-pipelines}. Each scheduler has a fixed number of instruction slots $size_{sched}$.
-In addition, for tracking load and store operations that are in flight, the CPU also has an LSQ, with a fixed number of slots for loads ($size_{ldq}$) and for stores ($size_{stq}$).
-So, if the total number of pending (in flight) store instructions is larger than the total size of the scheduler slots and the store queue, the next instruction will be blocked, until one (or more) of the previous instructions finishes.
+As shown in \Cref{fig:cpu-store-victim-observation}, the execution time of the individual \textit{store} operations by the adversary increases in the presence of victim traffic, irrespective of whether the victim is saturating the PCIe link or not.
+In the absence of a victim, the \textit{store} instruction takes $<15~cycles$ to complete. However, in the presence of victim traffic, the execution time increases to $>15~cycles$ and drops down again once the victim is done transmitting.
+As such, an adversary is able to determine the presence/absence of victim traffic.
 
-\textit{Second}, it is sufficient for the attacker to know if \textit{a} store instruction was delayed, and not if a particular store instruction was delayed.
-% Convince why this is the case.
-This would mean that we can use the first insight to queue a timer instruction immediately after issuing $size_{sched} + size_{stq}$ stores, and that timer will execute only after a store has completed.
+
+\begin{minipage}{\textwidth}
+    \lstinputlisting[language=Python]{code/interconnect-sc/timing-victim-with-stores.py}
+    \captionsetup{type=lstlisting}
+    \caption{Attacker code to detect presence of victim traffic via \textit{store} instructions}
+    \label{lst:timing-victim-with-stores}
+\end{minipage}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{figures/interconnect-sc/store-ops/cpu_store_victim_observation.png}
+    \caption{Observing the presence of victim DMA traffic using \textit{store} instructions. The victim does $10^4$ iterations of transferring 4KB/4MB.}
+    \label{fig:cpu-store-victim-observation}
+    % 2025-03-06_14-20
+\end{figure}

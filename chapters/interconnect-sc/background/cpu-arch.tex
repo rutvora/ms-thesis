@@ -34,10 +34,9 @@ In such cases, this stage also uses branch prediction to speculate on which inst
 \textbf{Schedule and Execute: } The scheduler(s) determine which instruction can be executed next based on the availability of the data that the instruction requires. 
 This ensures that a long-running instruction (e.g., where the data is unavailable) does not stall all other independent instructions that can be executed.
 As such, instructions here can be executed out of program order. 
-Once the instruction has finished execution and the output of the instruction (if any) is available in the registers, the instruction is removed from the scheduler 
-\footnote{On AMD Zen 3 architecture, each scheduler has a capacity of 24 entries.}.
-As load and store are common but time-consuming instructions, this stage also consists of a load-store queue where pending load and store operations are held
-\footnote{In Zen 3 cores, the load/store unit has a capacity of 72 loads and 64 stores.}. \\
+Once the instruction has finished execution and the output of the instruction (if any) is available in the registers, the instruction is removed from the scheduler.
+As load and store are common but time-consuming instructions, this stage also consists of a load-store queue where pending load and store operations are held. \\
+% \footnote{In Zen 3 cores, the load/store unit has a capacity of 72 loads and 64 stores.}. \\
 \textbf{Retire: } This stage ensures that instructions are retired in the program order so that the program can remain oblivious to the out-of-order execution that occurred in the previous stage.
 
 \begin{figure}[!htb]
