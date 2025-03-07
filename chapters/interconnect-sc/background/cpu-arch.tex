@@ -25,7 +25,7 @@ The figure shows the following components:
 \label{subsubsec:interconnect-sc-background-cpu-arch-pipelines}
 
 Modern CPUs rely on executing multiple instructions simultaneously to maximise performance.
-To achieve this, the CPUs have a multi-stage pipeline with the following stages: 1) Fetch, 2) Decode, 3) Schedule and Execute and 4) Retire.
+To achieve this, the CPUs have a multi-stage pipeline with the following stages: 1) Fetch, 2) Decode, 3) Schedule and Execute, and 4) Retire.
 We provide a simplified view of the pipeline in the CPU cores of the AMD EPYC Zen 3 processors in \Cref{fig:amd-core} and a brief description of each of the stages below:\\
 \textbf{Fetch: } This stage fetches the next macro-op from the cache or the memory. 
 However, the next macro-op to be fetched may not be deterministic, given the program may contain branches. 
@@ -54,9 +54,10 @@ MMIO enables the CPU to map some memory region of the PCIe endpoint in the CPU's
 Any process with the proper permissions can then map this memory within the process and perform normal \textit{load} or \textit{store} operations on this memory.
 However, this approach requires the execution units of the CPU to issue repeated \textit{load/store} instructions to copy data to the PCIe endpoint.
 While this method is useful for reading or writing limited content, such as small configuration parameters, to the PCIe endpoints, it is inefficient for transferring a large amount of data.
-To alleviate this, a lot of PCIe endpoints consist of a special hardware component called a DMA engine.
-The DMA engine can copy large chunks of contiguous data without involving the execution units of the CPU.
+To alleviate this, many PCIe endpoints consist of a special hardware component called a direct memory access (DMA) engine.
+The DMA engine is purpose-built to copy large chunks of contiguous data without involving the execution units of the CPU.
 
 For MMIO-based transactions, the load or store instructions go through the same instruction pipeline outlined in \Cref{fig:amd-core}. 
-From the Load Store Queue, they end up in the I/O die outlined in \Cref{fig:amd-cpu} and go out the I/O block to the connected PCIe endpoint.
-For DMA transactions (usually initiated by the PCIe endpoint), the transaction comes into the I/O block and, after some address and protocol translations, is sent out to the DRAM via the UMC.
+From the Load Store Queue, they enter the I/O die shown in \Cref{fig:amd-cpu} and exit through the I/O block to the connected PCIe endpoint.
+For DMA transactions, which are typically initiated by the PCIe endpoint, the transaction enters the I/O block. 
+After address and protocol translations, they are transmitted to the DRAM through the UMC.

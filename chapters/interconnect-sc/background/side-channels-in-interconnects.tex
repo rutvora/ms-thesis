@@ -1,14 +1,16 @@
 \subsection{Side Channels in Interconnects}
 \label{subsec:interconnect-sc-background-side-channels}
 
-Conceptually, carrying out a side-channel interconnect is very similar to carrying out a buffer congestion-based attack on internet networks, like the one presented by \citet{schuster2017beautyburst}. 
-The attacker creates congestion on a buffer in the communication path between the host (CPU) and the peripheral (e.g. GPU), such as the Rx/Tx buffers in the transaction layer implementation of the PCIe controller.
-The attacker then observes the delay in transmitting their own traffic.
-This delay would be proportional to the amount of data transferred by the victim, which would help the attacker gain insight into the victim's traffic shape.
+Conceptually, a side-channel attack in interconnects is similar to a side-channel attack in internet networks. 
+The attacker creates congestion on a buffer in the communication path between the host (CPU) and the peripheral (e.g. GPU), such as the Rx/Tx buffers in the transaction layer implementation of the PCIe controller (see \Cref{fig:pcie-controller}).
+The attacker then observes the delay in transmitting their traffic.
+This delay will be proportional to the data the victim transfers, which would help the attacker gain insight into the victim's traffic shape.
 
 However, a few differences between interconnects and traditional networks make it challenging to implement such an attack. \\
 \textit{First}, The bandwidth of interconnects like PCIe is at least an order of magnitude higher than that of internet networks.
-While a typical bandwidth in an internet network may be 1-10Gbps ( = 0.125 - 1.25 GBps), PCIe 4.0 can operate at a rate of 32GBps.
+While a typical bandwidth in an internet network is between 0.125 - 1.25 GBps 
+\footnote{Internet network bandwidth is typically measured in bits per second, while for interconnects, it is measured in bytes per second. Typical internet bandwidth is 1-10 Gbits per second.},
+PCIe 4.0 can operate at a rate of 32GBps.
 The high bandwidth makes it non-trivial to saturate the PCIe link. \\
 \textit{Second}, latency in PCIe is at least three orders of magnitude smaller than that of internet networks.
 Typically, internet latency is measured in milliseconds, while PCIe latency is measured in hundreds of nanoseconds to microseconds.
@@ -20,6 +22,11 @@ The attacker can not craft their own packets and can not change how the hardware
 % Most transaction types can not generate enough traffic to even come close to saturating the bandwidth of PCIe. 
 % While saturating the bandwidth may not be necessary to create a side-channel attack, it would be useful if there is always at least one attacker packet in the buffer whenever the victim might transmit.
 % This would ensure that the attacker can observe a delay in their own packets for each packet or set of packets the victim transmits.
+
+
+Nevertheless, prior work demonstrated that an adversary can create a congestion in the PCIe links by saturating the PCIe bandwidth.
+Using this congestion, the adversary can determine which website a user is visiting \cite{tan2021invisible, side2022lockeddown}, what the user is typing in a GUI environment \cite{tan2021invisible}, what machine learning model they are training \cite{tan2021invisible}, or what resources they are using on an FPGA connected via PCIe \cite{giechaskiel2022cross}.
+Recent work has also shown that congestion in PCIe can be used as a covert channel to exfiltrate data from a secure environment to a collaborator outside the environment \cite{giechaskiel2022cross, khaliq2021timing}.
 
 \begin{comment}
 https://www.linkedin.com/pulse/pci-express-primer-3-transaction-layer-simon-southwell/

@@ -5,22 +5,21 @@ Interconnects facilitate high-speed and low-latency communication within and bet
 While the evolution of interconnects has prioritised speed and latency, security has received less attention.
 On-chip interconnects do not have any encryption even today, while off-chip interconnects have only recently started focusing on encrypting the data in transit.
 For example, data transmitted off-chip to memory or another NUMA node is now encrypted when the user is using Intel's SGX/TDX or has AMD's SME or SEV enabled \cite{intel_upi_encryption, amd_gen_5_arch}.
-PCIe, which is used to communicate with peripheral devices, only introduced encryption with the PCIe v6.0 specifications 
-\footnote{PCIe 5.0 devices are only recently coming to market, and PCI-SIG has released an Engineering Change Notification (ECN) to optionally enable integrity and data encryption (IDE) for PCIe 5.0 \cite{pcie_ide_v5_ecn}}
+PCIe, which is used to communicate with peripheral devices, only introduced encryption with the PCIe 6.0 specifications 
+\footnote{PCI-SIG has released an Engineering Change Notification (ECN) to optionally enable integrity and data encryption (IDE) for PCIe 5.0 \cite{pcie_ide_v5_ecn}}
 \cite{pcie_ide_v6}.
 While the recent focus on interconnect security is on encryption, little focus has been given to network-side channel attacks on interconnects.
 
-Recent research has demonstrated that creating congestion in PCIe can help an adversary determine which website a user is visiting \cite{tan2021invisible, side2022lockeddown}, what the user is typing in a GUI environment \cite{tan2021invisible}, what machine learning model they are training \cite{tan2021invisible}, or what resources they are using on an FPGA connected via PCIe \cite{giechaskiel2022cross}.
-Recent work has also shown that congestion in PCIe can be used as a covert channel to exfiltrate data from a secure environment to a collaborator outside the environment \cite{giechaskiel2022cross, khaliq2021timing}.
+Recent research has demonstrated that creating congestion by saturating the PCIe bandwidth can help an adversary determine the user's activity.
 However, prior work relies on PCIe 3.0 and often has a hierarchical topology where there is a shared PCIe switch or PCH.
 In addition, they rely on the adversary's ability to saturate the PCIe bandwidth, hence creating congestion.
 
 This chapter answers two important research questions:
 \textbf{RQ1:} Is it possible to create contention in PCIe links without the adversary saturating the PCIe bandwidth?
-\textbf{RQ2:} Is it possible to create congestion on a non-hierarchical PCIe link in faster PCIe v4.0?
+\textbf{RQ2:} Is it possible to create congestion on a non-hierarchical PCIe link in faster PCIe 4.0?
 
 The rest of the chapter is organised as follows.
-We begin by providing some relevant background on PCIe, the CPU architecture we work with, and interconnect side-channels in general in \Cref{sec:interconnect-sc-background}. 
+We begin by providing relevant background on PCIe, the CPU architecture we work with, and interconnect side-channels in general in \Cref{sec:interconnect-sc-background}. 
 Then, we outline our threat model and our setup in \Cref{sec:interconnect-sc-threat-model} and \Cref{sec:interconnect-sc-setup}, respectively.
 We answer the research questions outlined above in \Cref{sec:interconnect-sc-store-ops} and \Cref{sec:interconnect-sc-dma}.
 Finally, we discuss the limitations of our approach in \Cref{sec:interconnect-sc-limitations} and how our approach compares to related work in \Cref{sec:interconnect-sc-related-work}.

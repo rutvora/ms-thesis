@@ -20,14 +20,9 @@ Since each \textit{load} instruction must wait for the previous one to complete,
 However, a memory store (and hence a posted transaction) does not have to wait for a previous store to complete.
 As such, we determine that memory stores are the correct type of transaction for the attacker.
 
-The \textit{mfence} instruction in \Cref{lst:pcie-mem-reads-v-writes} ensures prior \textit{store} operations complete before the \textit{mfence} does.
-However, it disrupts the attacker from issuing a continuous stream of \textit{store} operations.
-Simply removing the \textit{mfence} from the code is not sufficient, as then the end \textit{timer} may execute out of order with respect to the issued \textit{store} operations, giving a false execution time.
-To fix this, the attacker needs a mechanism that can issue as many \textit{store} instructions as possible while having the ability to time the completions at the level of each instruction.
-
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=\columnwidth]{figures/interconnect-sc/store-ops/pcie_mem_reads_v_writes.png}
+    \includegraphics[width=0.8\columnwidth]{figures/interconnect-sc/store-ops/pcie_mem_reads_v_writes.png}
     \caption{Comparison: PCIe memory reads vs writes}
     \label{fig:pcie-mem-reads-v-writes}
 \end{figure}
@@ -43,11 +38,17 @@ To fix this, the attacker needs a mechanism that can issue as many \textit{store
 \subsubsection{Issuing and timing a continuous stream of \textit{store} instructions}
 \label{subsubsec:interconnect-sc-store-ops-challenges-measuring-time}
 
+The \textit{mfence} instruction in \Cref{lst:pcie-mem-reads-v-writes} ensures prior \textit{store} operations complete before the \textit{mfence} does.
+However, it disrupts the attacker from issuing a continuous stream of \textit{store} operations.
+Simply removing the \textit{mfence} from the code is not sufficient, as then the end \textit{timer} may execute out of order with respect to the issued \textit{store} operations, giving a false execution time.
+To fix this, the attacker needs a mechanism that can issue as many \textit{store} instructions as possible while having the ability to time the completions at the level of each instruction.
+
 To measure the completion time of a \textit{store} operation which is issued out-of-order, we make use of two key insights:
 
 \textit{First}, the CPU core would need to keep track of all instructions executed out-of-order so that they are retired in program order.
 Keeping this track would require a scheduler and a buffer in the hardware, which would have a limited and fixed size.
-The AMD CPU has four schedulers as described in \Cref{subsubsec:interconnect-sc-background-cpu-arch-pipelines}. Each scheduler has a fixed number of instruction slots, $size_{sched}$.
+The AMD CPU has four schedulers as described in \Cref{subsubsec:interconnect-sc-background-cpu-arch-pipelines}. Each scheduler has a fixed number of instruction slots, $size_{sched}$
+\footnote{AMD Zen 3 schedulers have $\sim$22-24 slots per scheduler \cite{gast2023squip}.}.
 In addition, for tracking \textit{load} and \textit{store} operations that are in flight, the CPU also has a load-store queue (LSQ), with a fixed number of slots for loads ($size_{ldq} = 72$) and for stores ($size_{stq} = 64$) \cite{amd_7003_software_optimization_guide}.
 Suppose the total number of pending (in flight) \textit{store} instructions is larger than the total size of the scheduler slots and the store queue. 
 In that case, the next instruction will be blocked until one (or more) of the previous instructions finishes.
@@ -56,12 +57,13 @@ In that case, the next instruction will be blocked until one (or more) of the pr
 % Any instruction that is not yet in the scheduler can not be executed out of order until it gets a slot in one of the schedulers.
 % We leverage this behaviour of the CPU to develop a mechanism that can issue multiple \textit{store} instructions while having the ability to time individual completions.
 
-We can use the first insight to queue a \textit{timer} instruction immediately after issuing $size_{sched} + size_{stq}$ stores, and that \textit{timer} will execute only after a \textit{store} instruction has been completed.
+We can use these insights to queue a \textit{timer} instruction immediately after issuing $size_{sched} + size_{stq}$ stores, and that \textit{timer} will execute only after the first \textit{store} instruction that was issued has been completed.
 To achieve this, we need to ensure that we can issue $N = 3 * size_{sched} + size_{stq}$ 
-\footnote{Only three schedulers have an address generation unit (AGU), which also triggers \textit{load/store} operations.}
+\footnote{Only three schedulers have an address generation unit (AGU) that triggers \textit{load/store} operations.}
 \textit{store} instructions in $t_{cpu} < 600~cycles$ (see \Cref{fig:pcie-mem-reads-v-writes}), to ensure that the CPU pipeline is filled before the first \textit{store} instruction retires.
-As the AMD CPU can issue 2 \textit{store} instructions per cycle \cite{amd_7003_software_optimization_guide}, $t_{cpu} = N/2$
-\footnote{AMD Zen 3 schedulers have $\sim$22-24 slots per scheduler \cite{gast2023squip}. Hence, if $size_{sched} = 24$, $N = 3 * 24 + 64 = 136$, and $t_{cpu} = N/2 = 68~cycles$.}.
+As the AMD CPU can issue 2 \textit{store} instructions per cycle \cite{amd_7003_software_optimization_guide}, $t_{cpu} = N/2$.
+For $size_{sched} = 24$ and $size_{stq} = 64$, $t_{cpu} = 68~cycles$.
+% \footnote{Hence, if $size_{sched} = 24$, $N = 3 * 24 + 64 = 136$, and $t_{cpu} = N/2 = 68~cycles$.}.
 
 Now, after the initial $N$ stores, if we issue a continuous stream of (\textit{timer}...\textit{store}) pairs, the \textit{timer} from the pair will only be executed once a previous \textit{store} retires.
 As this \textit{timer} instruction will be executed immediately (out of order with the other stores), the \textit{store} in this pair will almost immediately occupy the now available scheduler slot, blocking the next \textit{timer}.
@@ -95,17 +97,17 @@ As we can see in \Cref{fig:measuring-store-time}, the measured time difference s
 \label{subsubsec:interconnect-sc-store-ops-challenges-microcode-updates}
 However, the behaviour of the CPU observed in \Cref{fig:measuring-store-time} is dependent on the microcode the CPU is running.
 The CPU microcode can change how the CPU behaves.
-For example, the microcode may change how the schedulers schedule the instructions out of order, how the LSU tracks the stores in flight, or how the write-combining buffers combine multiple \textit{store} instructions for efficient usage of the interconnects.
+For example, the microcode can change how the schedulers schedule the instructions out of order, how the LSU tracks the stores in flight, or how the write-combining buffers combine multiple \textit{store} instructions for efficient usage of the interconnects.
 
 The results in \Cref{fig:measuring-store-time} are based on the microcode patch 0x0A0011D5 (for AMD EPYC 3rd gen 19h B1 processors) released on May 03, 2024 to address CVE-2023-31315 \cite{amd_microcode_update}.
-Prior to this update (i.e. microcode patch 0x0a0011d3
-\footnote{AMD does not offer changelogs for their microcode, and hence we are unable to confirm what CPU behaviour changed between the given versions.}
-), the results were as shown in \Cref{fig:measuring-store-time-before-microcode-update}.
+Prior to this update (i.e. microcode patch 0x0a0011d3), the results were as shown in \Cref{fig:measuring-store-time-before-microcode-update}.
 Here, $N = 120$, instead of $N = 80$. 
 In addition, after the threshold of $N$, the stores complete in groups of $8$ instead of retiring individually.
 This may be caused by unexpected behaviour of the write-combining (WC) buffers that are present after the LSU in the CPU pipeline.
 The usage of the WC buffers also explains the high variation in the execution time measured, as the WC buffer combines writes based on certain threshold differences between the target addresses \cite{amd_7003_software_optimization_guide}, which are dependent on the order in which the stores were issued.
 While we ensure that Linux marks the PCIe resource as a memory type that does not allow write-combining, the CPU may still be using these buffers unexpectedly.
+However, AMD does not offer changelogs for their microcode.
+Hence, we are unable to confirm what CPU behaviour changed between the given versions.
 
 
 \begin{figure}[!htb]

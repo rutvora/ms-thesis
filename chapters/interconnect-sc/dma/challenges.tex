@@ -10,7 +10,7 @@ In contrast, large transfers provide coarse-grained measurements but may be able
 To determine the appropriate transfer size, we profile the execution time and bandwidth utilisation of PCIe across different DMA transfer sizes.
 
 To perform the DMA transfers, we rely on the \textit{cudaMemcpy} function provided by Nvidia CUDA.
-We ensure that the memory on the CPU is pinned to the DRAM, and can not be swapper, as this is required by DMA.
+We ensure that the memory on the CPU is pinned to the DRAM, and can not be swapped, as this is required by the DMA engine.
 We measure the DMA transfer time using \textit{cudaEventRecord}, which uses a timer from the GPU to measure the time taken by GPU operations such as \textit{cudaMemcpy}.
 
 % To perform the DMA transfers, we rely on the \textit{cudaMemcpy} function provided by Nvidia CUDA.
