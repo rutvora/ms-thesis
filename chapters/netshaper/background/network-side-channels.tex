@@ -1,32 +1,34 @@
 \subsection{Network Side Channels}
 \label{subsec:netshaper-background-network-side-channels}
 
-With a network side-channel attack, an attacker wants to determine the contents of the web traffic being transmitted or received by the victim by observing the shape of the transmitted traffic.
-In most network-side channel attacks, such as website or video stream fingerprinting, the attacker is interested in knowing if the victim accessed any content from a small subset and, if so, which content they accessed \cite{bhat2019varcnn, dyer2012peek, hayes2016kfp, sirinam2018df, schuster2017beautyburst}.
-To do this, the attacker follows these steps: 
-1) Collect network traces,
-2) Build a classifier trained on the collected network traces,
-3) Gain access to the network shared with the victim,
-4) Profile the victim's network traffic, and
-5) Determine whether the victim accessed any content of interest to the attacker
+In a network side-channel attack, an attacker wants to determine the contents of the traffic being transmitted or received by the victim by observing the shape of the transmitted traffic.
+In most network-side channel attacks, such as website or video stream fingerprinting, the attacker wants to determine what item was accessed
+% is interested in knowing if the victim accessed any content from a small subset and, if so, which content they accessed 
+\cite{bhat2019varcnn, dyer2012peek, hayes2016kfp, sirinam2018df, schuster2017beautyburst}.
+In a typical attack, the attacker:
+1) Collects network traces,
+2) Builds a classifier trained on the collected network traces,
+3) Gains access to the network shared with the victim,
+4) Profiles the victim's network traffic, and
+5) Determines whether the victim accessed any content of interest to the attacker
 
-First, the attacker builds a collection of the content (e.g. webpages and video streams) that they are interested in. 
+First, the attacker builds a collection of the content (e.g., webpages and video streams) in which they are interested. 
 They interact with the server(s) as a client and collect network traces for this content under various network conditions to account for variability caused by the network itself. 
 Then, the attacker trains a classifier on this collected network trace.
-The classifier can use multiple features like packer sizes, inter-packer timing, total bytes transferred in a burst of packets, the duration of the burst and the interval between bursts, and the direction of the bursts \cite{schuster2017beautyburst}.
+The classifier can use multiple features such as packet sizes, inter-packer timing, total bytes transferred in a burst of packets, the duration of the burst and the interval between bursts, and the direction of the bursts \cite{schuster2017beautyburst}.
 
 Now, to carry out the attack, the attacker gains access to some network path shared with the victim.
-The attacker could own a router or switch on the network path of the victim, or another machine that shares the same router or switch that the victim is connected to.
+The attacker could own a router or switch on the victim's network path or another machine that shares the same router or switch to which the victim is connected.
 If they own an element in the network path, they can directly observe all the features necessary to carry out the attack. 
-Otherwise, they create congestion in the shared network path such that the victim's network traffic would contend with the attacker's traffic.
-In this case, the attacker's traffic would be delayed, and the delay would be proportional to the victim's traffic, thus revealing some features of the victim's traffic.
-The attacker could also have infiltrated the victim's machine, and maybe running a malicious application on that machine.
-The malicious application could be a javascript-based advertisement on the page the victim is visiting or another process on the victim's machine \cite{schuster2017beautyburst}, thus gaining the ability to create contention on the network card in the victim's machine. 
+Otherwise, they create congestion in the shared network path such that the victim's network traffic contends with the attacker's traffic.
+In this case, the attacker's traffic is delayed, and the delay will be proportional to the victim's traffic, thus revealing features of the victim's traffic.
+The attacker could also have infiltrated the victim's machine, possibly running a malicious application on that machine.
+The malicious application could be a javascript-based advertisement on a page the victim is visiting or another process on the victim's machine \cite{schuster2017beautyburst}, thus gaining the ability to create contention on the network card in the victim's machine. 
 
 
-Once the attacker has access to the shared network path with the victim, they collect the network traces of their own traffic. and, based on that, extract the features of the victim's traffic flow.
-These extracted features are then run through the pre-trained classifier, which helps the attacker determine which content the victim accessed. 
+Once the attacker has access to the shared network path, they collect the network traces of their own traffic and extract the features of the victim's traffic flow.
+These extracted features are then run through the pre-trained classifier, which allows the attacker to determine which content the victim accessed. 
 \citet{schuster2017beautyburst} demonstrated that one could train a Convolution Neural Network (CNN)-based classifier to determine which video the victim is streaming.
-Similarly, prior work has demonstrated that such a network side-channel attack can also be used to determine which webpage the victim is visiting \cite{hayes2016kfp, panchenko2016website, gong2010fingerprinting}
+Similarly, other work demonstrated that such a network side-channel attack can also be used to determine which webpage a victim is visiting \cite{hayes2016kfp, panchenko2016website, gong2010fingerprinting}
 
 % \section{Threat Model}\label{sec:nsc-threat-model}

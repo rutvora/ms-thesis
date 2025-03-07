@@ -6,24 +6,24 @@ CS-BuFLO \cite{cai2014csbuflo} applies traffic shaping by transmitting a fixed n
 DeltaShaper \cite{barradas2017deltashaper} obfuscates the traffic shape to always look like a video conference stream.
 It transcodes the application traffic as a video stream that is then fed to Skype with a virtual camera.
 While both the implementations require modifications to the end-hosts, their approach can conceptually be implemented as a middlebox.
-However, their approach is not adaptive to the application traffic, and hence, can result in either high bandwidth overhead or high latency.
+However, their approach is not adaptive to the application traffic, hence, can result in either high bandwidth overhead or high latency.
 In addition, DeltaShaper is also unable to support more than one application stream at a time.
-HTTPOS \cite{luo2011httpos}, ALPaCA and LLaMA \cite{cherubin2017llama}, and Walkie-Talkie \cite{wang2017walkie} all require modification of the end-hosts and only support HTTP applications.
+HTTPOS \cite{luo2011httpos}, ALPaCA and LLaMA \cite{cherubin2017llama}, and Walkie-Talkie \cite{wang2017walkie} all require modification of the end-hosts and support only HTTP applications.
 
 Pacer \cite{mehta2022pacer} provides a shaping tunnel that is conceptually similar to NetShaper's tunnel design (see \Cref{sec:netshaper-designing-traffic-shaping-tunnel}).
-However, Pacer aims to protect a cloud tenant's data from being leaked to a co-located adversary via congestion in a shared network link.
-As such, Pacer controls the transmit time of TCP packets based on the shaping schedule and congestion control signals
+However, Pacer protects a cloud tenant's data from being leaked to a co-located adversary via congestion in a shared network link.
+As such, Pacer controls the transmit time of TCP packets based on the shaping schedule and congestion control signals.
 Achieving this requires non-trivial modifications to the end-hosts.
 On the other hand, NetShaper protects applications in different private networks that are communicating over the public internet. 
 As such, NetShaper can be placed as a gateway for the private networks to access the public internet, thus requiring none to minimal changes on the end-hosts.
-In addition, NetShaper's approach only requires precise timing for generation of bursts of DP length and not for the actual network transmission, requiring no modification of the underlying network stack.
+In addition, NetShaper's approach requires precise timing only for the generation of bursts of DP length and not for the actual network transmission, requiring no modification of the underlying network stack.
 
-QCSD \cite{smith2022qcsd} is similar to NetShaper in that it also relies on the QUIC protocol.
-Although, QCSD does require the modification of an end-host, specifically the client-side browser.
-However, as QCSD does not require any modification on the server-side, it relies on the client-side to control the amount of data the server should send to the client, including the padding/dummy bytes. 
+QCSD \cite{smith2022qcsd} shares similarities with NetShaper, as both rely on the QUIC protocol. 
+However, QCSD requires modifications to the client-side browser, unlike NetShaper. 
+Since no server-side modifications are necessary, QCSD depends on the client to control the amount of data sent by the server, including the addition of padding or dummy bytes.
 This approach requires the client to be aware of the sizes of the content the server hosts, as otherwise, the client may request more padding/dummy bytes than the requested content contains.
-In addition, their approach does not scale well with increasing number of client applications, as each client application will require their own QUIC connection, which in turn results in per-client dummy/padding bytes being transferred.
+In addition, their approach does not scale well with an increasing number of client applications, as each client application will require its own QUIC connection, which in turn results in per-client dummy/padding bytes being transferred.
 
 Ditto \cite{meier2022ditto} and NetShaper both shape traffic at network nodes that do not coincide with the end-hosts.
 However, NetShaper's approach is hardware-independent, modular, and portable.
-As such, NetShaper can be integrated into routers, gateways, end-hosts, and even programmable switches like the one Ditto works on.
+As such, NetShaper can be integrated into routers, gateways, end-hosts, and even programmable switches such as the one on which Ditto was deployed.

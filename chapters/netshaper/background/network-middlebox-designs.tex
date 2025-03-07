@@ -1,18 +1,18 @@
 \subsection{Network Middlebox Design and Implementation}
 \label{subsec:netshaper-background-network-middlebox-designs}
 
-A middlebox is defined as ``any intermediary device performing functions other than the normal, standard functions of an IP router on the datagram path between a source host and destination host'' \cite{rfc3234middleboxes}.
-Middleboxes have been used in computer networks for various purposes, such as Network Address Translation (NAT), gateways, proxies, firewalls, and load balancers, to name a few.
+A middlebox is ``any intermediary device performing functions other than the normal, standard functions of an IP router on the datagram path between a source host and destination host'' \cite{rfc3234middleboxes}.
+Middleboxes have been used in computer networks for various purposes, such as Network Address Translation (NAT), gateways, proxies, firewalls, and load balancers.
 A middlebox needs to be designed, implemented and deployed differently based on its application.
 
 There are certain trade-offs that need to be considered when designing and implementing network middleboxes.
-A network middlebox implemented in the hardware would be faster compared to the same implementation in software, mainly because the hardware would be purpose-built to achieve the singular task.
-However, a hardware implementation would also render the middlebox relatively inflexible as it could only carry out a fixed pre-set list of functionality.
-On the other hand, while the software implementation of a middlebox would be slower, it would be more flexible, would support more complex features and can be easily modified or updated.
+A network middlebox implemented in the hardware is faster than the same implementation in software because the hardware is customised for the task.
+However, a hardware implementation also renders the middlebox relatively inflexible as it can carry out only a fixed pre-set list of functionality.
+On the other hand, while the software implementation of a middlebox is slower, it is more flexible and supports more complex features and can be easily modified or updated.
 As networking layers above the transport layer (L4) are complex, any network middlebox implementing functionality at L4 or higher requires a software implementation.
 
 Depending on the application of the middlebox, it may be deployed as a transparent or non-transparent network component.
-A middlebox providing NAT, firewall or load balancing functionalities may be transparent to the end hosts.
+A middlebox providing NAT, firewall, or load balancing functionality may be transparent to the end hosts.
 As such, the middlebox operates without requiring any changes to the source or destination hosts.
 However, middleboxes acting as explicit proxies or application-layer gateways are not transparent to the end hosts and may require explicit configuration of the end host(s).
 
@@ -23,17 +23,17 @@ Proxies implemented as middleboxes often serve various purposes in network secur
 There are two major kinds of proxies: Forward Proxies and Reverse Proxies.
 A forward proxy sits between a client and external servers and intercepts all outbound traffic, modifying it if necessary and then forwarding it to the destination.
 Forward proxies are used for access control or content filtering, providing anonymity to the client, or enhancing application performance by caching frequently accessed content.
-A reverse proxy sits in front of a group of servers and is often used to load balance between multiple servers or cache the server data, reducing the workload on the server. 
+A reverse proxy sits in front of a group of servers and is often used to load balance between multiple servers or cache server data, reducing the workload on the server. 
 It can also be used as a firewall to defend the servers against malicious activity.
 
 Proxies are usually implemented at either the transport layer (L4) or the application layer (L7).
 A proxy implemented at L7 deals with application-specific protocols.
-This allows the proxy to provide a rich set of functionalities such as injecting application headers, filtering inbound or outbound traffic based on the application layer data, or enforcing client authentication.
-However, L7 proxies have a high processing overhead, impacting the throughput of the proxy.
+This allows the proxy to provide a rich set of functionalities, such as injecting application headers, filtering inbound or outbound traffic based on the application layer data, or enforcing client authentication.
+However, L7 proxies have high processing overhead, impacting proxy throughput.
 An L4 proxy is application-agnostic and does not have any insight into the application-layer data.
-However, it provides a higher throughput with minimal overhead since it does not need to inspect the application-layer data.
+However, it provides higher throughput with minimal overhead, since it does not need to inspect the application-layer data.
 Such proxies are typically used to provide anonymity to the client or to provide simple client-based load balancing to the servers.
 
 An L4 proxy usually acts as the transport layer (TCP/UDP) termination point for the source host.
 It then transmits the data to the destination host using a separate transport layer connection.
-While L4 proxies have commonly relied on either TCP or UDP to proxy the data to the destination host, a proposal is in the works to instead use QUIC for the same purpose \cite{quic_masque}, as QUIC alleviates some problems of proxying data via TCP or UDP (outlined in \Cref{subsec:netshaper-background-quic}).
+While L4 proxies have commonly relied on either TCP or UDP to proxy the data to the destination host, some have proposed using QUIC for the same purpose \cite{quic_masque}, as QUIC alleviates some problems of proxying data via TCP or UDP.

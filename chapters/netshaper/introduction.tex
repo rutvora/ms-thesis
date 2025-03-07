@@ -1,32 +1,31 @@
 % \section{Introduction}
 % \label{sec:netshaper-intro}
 
-Encryption, which has become the de-facto mechanism for protecting communication over the internet, does not conceal the shape of the traffic, leading to network side-channel attacks.
-Prior work has demonstrated that in many applications, this traffic shape has a strong correlation with the data being transmitted.
-For example, webpages on the internet access different resources like CSS, JavaScript and images in a unique pattern.
+Encryption, which has become the de-facto mechanism for protecting communication over the internet, does not conceal the shape of the traffic.
+Prior work has demonstrated that in many applications, this traffic shape has a strong correlation with the data being transmitted and, as such, is a potential vector for network side-channel attacks.
+For example, webpages on the internet access different resources such as CSS, JavaScript and images in a unique pattern.
 This access pattern can be fingerprinted \cite{gong2010fingerprinting, bhat2019varcnn, wang2014supersequence}.
-Similarly, videos that are streamed on the internet can also be fingerprinted.
-Most streaming videos rely on the DASH standard \cite{dash2013}.
-As such, the videos are split into five-second segments, which are compressed individually and transmitted in a burst of traffic every five seconds, thus creating a unique fingerprint \cite{schuster2017beautyburst}.
+Similarly, streaming videos on the internet can also be fingerprinted.
+Most streaming videos rely on the DASH standard \cite{dash2013} in which the videos are split into five-second segments, which are compressed individually and transmitted in a burst of traffic every five seconds, thus creating a unique fingerprint \cite{schuster2017beautyburst}.
 
 
-While a lot of solutions have been proposed to mitigate network side-channel attacks, very few provide any concrete mitigation system.
+While many solutions have been proposed to mitigate network side-channel attacks, few provide any deployable mitigation system.
 Of the ones that do provide deployable systems, many require non-trivial modifications to the end host and either do not support or do not scale well with multiple users \cite{cai2014csbuflo, cherubin2017llama, luo2011httpos, smith2022qcsd, wang2017walkie, mehta2022pacer}.
-Others are either not application agnostic or do not adapt to the application traffic \cite{barradas2017deltashaper, cherubin2017llama, luo2011httpos}.
+Others are either specific to a given application or do not adapt to the traffic patterns of different applications \cite{barradas2017deltashaper, cherubin2017llama, luo2011httpos}.
 In addition, these systems do not have a modular design that can be easily extended to support additional types of traffic and additional protocols.
 
 This chapter presents the NetShaper system, a modular, portable, scalable network side-channel mitigation system.
 NetShaper is a transport layer (L4) proxy tunnel that can be integrated with any network stack and within any node.
-Our system only requires the end-host to change their operating systems or browser's proxy configuration.
+Our system requires only that the end-host change their operating system's or browser's proxy configuration.
 NetShaper's modular architecture allows easy modification of any system sub-component to support additional protocols or alternative implementations.
-To support and scale with multiple clients, NetShaper relies on the QUIC protocol and assigns a QUIC stream to every client-server pair.
+To support and scale with multiple clients, NetShaper relies on the QUIC protocol \cite{quic_rfc}, assigning a QUIC stream to every client-server pair.
 
 The rest of the chapter is organised as follows:
 In \Cref{sec:netshaper-background}, we first provide a background on network side-channel attacks, how differential privacy can be used to mitigate such attacks, and how the QUIC protocol, which is fundamental to the scalability of NetShaper, works.
-In \Cref{sec:netshaper-threat-model}, we outline the Threat Model with which NetShaper works.
+In \Cref{sec:netshaper-threat-model}, we outline the Threat Model for which NetShaper provides mitigation.
 We then present the design of NetShaper's QUIC-based traffic shaping tunnel in \Cref{sec:netshaper-designing-traffic-shaping-tunnel}.
-\Cref{sec:netshaper-middlebox-implementation} outlines the system implementation of NetShaper.
+\Cref{sec:netshaper-middlebox-implementation} presents the system implementation of NetShaper.
 We evaluate the performance of NetShaper and provide the results in \Cref{sec:netshaper-evaluation}.
 We then discuss the limitations of NetShaper in \Cref{sec:netshaper-limitations}.
-Finally, we conclude the chapter by providing a comprehensive view of the related work and how NetShaper fares against them in \Cref{sec:netshaper-related-work}.
+Finally, we conclude the chapter by providing a comprehensive view of the related work and how NetShaper compares to them in \Cref{sec:netshaper-related-work}.
 

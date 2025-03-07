@@ -1,15 +1,15 @@
 \section{Limitations}
 \label{sec:netshaper-limitations}
 
-In terms of security, our implementation has two limitations.
-First, it relies on MSQUIC implementation of QUIC, which utilises OpenSSL, which may not provide constant time cryptography.
+Our implementation has two security limitations.
+First, it relies on the MSQUIC implementation of QUIC, which utilises OpenSSL, which may not provide constant time cryptography.
 However, this limitation can be easily remedied by modifying MSQUIC so that it uses a constant-time cryptography library such as WolfSSL \cite{wolfssl}.
 Second, it is difficult to profile for $T_{prep}$ and $T_{enq}$. 
 If the time taken by the \textit{Prepare} thread exceeds that of the profiled values, it violates our theoretical DP guarantees. 
 However, in practice, it is difficult to exploit these violations for carrying out traffic analysis based network side-channel attacks.
 
-In addition, NetShaper has two more limitations in terms of usability and performance.
+NetShaper has two more limitations in terms of usability and performance.
 First, we currently require a custom configuration format supplied by the client to configure the destination for a connection. 
 However, given the modular architecture of our system, one can easily implement \textit{UShaper} as a SOCKS5 proxy \cite{leech1996socks} or any other standard proxy protocol.
-Second, the current implementation only dedicates one core each to \textit{UShaper}, \textit{Prepare}, and \textit{QUIC Worker}. These can become a bottleneck. 
+Second, the current implementation dedicates only one core each to \textit{UShaper}, \textit{Prepare}, and \textit{QUIC Worker}. These can become a bottleneck. 
 While it is relatively simple to dedicate more cores for \textit{UShaper} or \textit{QUIC Worker}, doing so for the \textit{Prepare} thread is non-trivial, as it has to aggregate data from all the available clients.

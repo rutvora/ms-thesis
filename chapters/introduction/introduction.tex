@@ -4,29 +4,31 @@
 \chapter{Introduction}
 \label{ch:Introduction}
 
-Today, we live in a connected world where various network links are used to transmit and receive a lot of data. 
-This data can be a webpage or video being streamed by a user on the internet. 
+Today, we live in a connected world where various network links are used to transmit and receive data. 
+This data can be a webpage or video accessed by a user on the internet. 
 It can also be an image or a machine learning model being sent from the CPU to the GPU for processing. 
 Given the extensive scale at which data is transmitted, ensuring its security and privacy during transit is of paramount importance.
 
-To protect data that is in transit, we have come to rely on encryption. 
-Most encryption mechanisms today rely on mathematical functions that transform the plaintext into a ciphertext. 
-Only an entity with the correct key can decipher the ciphertext back into plaintext. 
-As such, encryption effectively conceals the content of the data that is in transit.
 
-While encryption protects the content of the data in transit, it does not conceal the metadata corresponding to the transmission.
+Encryption has become the relied-upon method to protect data that is in transit.
+Most encryption mechanisms today rely on mathematical functions that transform the plaintext into a ciphertext. 
+Only an entity with the correct key can perform the inverse transformation from the ciphertext back into plaintext. 
+As such, encryption effectively conceals the contents of the data that is in transit.
+
+While encryption protects the contents of the data in transit, it does not conceal the metadata corresponding to the transmission.
 Metadata, such as packet sizes and timings, are visible to any adversary with access to the shared network link.
-Prior work has demonstrated that in some applications, this metadata is strongly correlated with the data being transmitted and, hence, can inadvertently leak the contents of the transmission.
+Prior work demonstrated that, in some applications, this metadata is strongly correlated with the data being transmitted.
+This correlation can inadvertently leak the contents of the transmission.
 For example, attackers on the internet can identify the video a user is streaming \cite{schuster2017beautyburst} or the webpage they are visiting \cite{gong2010fingerprinting, wang2014supersequence}.
-Even when the data is being transmitted on an interconnect within a computer (e.g. from a CPU to a GPU or NIC), the corresponding metadata can reveal the user's text input or even the machine learning model being trained \cite{tan2021invisible}.
-In the literature, such attacks are commonly known as network side-channel attacks.
+Even when the data is being transmitted on an interconnect within a computer (e.g., from a CPU to a GPU or the network interface card (NIC)), the corresponding metadata can reveal the user's text input or even the machine learning model being trained \cite{tan2021invisible}.
+In the literature, such attacks are commonly known as \textit{network side-channel attacks}.
 
 Network side channels have been studied extensively in Internet networks.
-They can be used to classify the type of data being transferred \cite{shapira2019flowpic}, determine the website a client is visiting \cite{bhat2019varcnn, dyer2012peek, hayes2016kfp, sirinam2018df}, the video that a user is streaming \cite{schuster2017beautyburst}, what they are speaking on a video or VoIP call \cite{white2011phonotactic}, or even for covert communication \cite{barradas2020poking}.
+They can be used to classify the type of data being transferred \cite{shapira2019flowpic}, determine the website a client is visiting \cite{bhat2019varcnn, dyer2012peek, hayes2016kfp, sirinam2018df}, the video that a user is streaming \cite{schuster2017beautyburst}, what they are speaking on a video or VoIP call \cite{white2011phonotactic} or even for covert communication \cite{barradas2020poking}.
 These attacks have also been explored to a limited extent in data centre networks.
-For example, they can be used as covert channels to exfiltrate data out \cite{tahir2016sneak}.
-Similarly, there has been limited exploration of network side channels in on and off-chip networks. 
-These can be used for website fingerprinting, \cite{tan2021invisible, side2022lockeddown}, determining user input \cite{tan2021invisible, rodrigues2024busted} or revealing the workload on an FPGA or GPU \cite{tan2021invisible, giechaskiel2022cross, fang2023gotcha}.
+For example, they can be used as covert channels to exfiltrate data \cite{tahir2016sneak}.
+Similarly, prior work also explored network side channels in on and off-chip networks. 
+These can be used for website fingerprinting, \cite{tan2021invisible, side2022lockeddown}, determining user input \cite{tan2021invisible, rodrigues2024busted} or revealing the workload on a field programmable gate array (FPGA) or GPU \cite{tan2021invisible, giechaskiel2022cross, fang2023gotcha}.
 They can also be used for covert channel communication \cite{khaliq2021timing, giechaskiel2022cross, side2022lockeddown, dutta2023spy}.
 
 To defend against network side-channel attacks in Internet and datacenter networks, several solutions have been proposed. 
@@ -39,14 +41,16 @@ Of those that do provide concrete systems, some are not easily deployable \cite{
 % Others are either not application agnostic or do not adapt to the bandwidth and latency requirements of the application \cite{cherubin2017llama, luo2011httpos, barradas2017deltashaper}.
 
 Network side-channel attacks in interconnects have received far less attention.
-Most prior work relies on systems that are slow or highly constrained.
-Invisible Probe \cite{tan2021invisible} and Locked Down \cite{side2022lockeddown} both rely on PCIe v3.0, which offers half the bandwidth of PCIe v4.0.
-Invisible Probe \cite{tan2021invisible} and the FPGA-based attack by \citet{giechaskiel2022cross} both rely on creating contention in a PCIe switch or PCH that has multiple downlinks but only one uplink, resulting in the ability to easily create congestion.
+Most prior work focusing on network side-channels in the peripheral component interconnect express (PCIe) interconnect relies on systems that are slow or highly constrained.
+Invisible Probe \cite{tan2021invisible} and Locked Down \cite{side2022lockeddown} both rely on PCIe 3.0, which offers half the bandwidth of PCIe 4.0 \cite{pcie_3_v_4}.
+Invisible Probe \cite{tan2021invisible} and the FPGA-based attack by \citet{giechaskiel2022cross} both rely on creating contention in a PCIe switch or the platform controller hub (PCH) 
+\footnote{A PCH is a controller that is used to share a single PCIe upstream link with multiple slow devices such as hard disks and USBs.}
+that has multiple downlinks but only one uplink, resulting in the ability to easily create congestion.
 The work by \citet{khaliq2021timing} relies on an out-of-date desktop CPU that is highly constrained in terms of performance to create contention.
 
-In this thesis, we first present a modular, portable and scalable network side-channel mitigation system called NetShaper 
+We first present a modular, portable and scalable network side-channel mitigation system called NetShaper 
 \footnote{NetShaper is both the name of a differential-privacy-based framework and a system that implements the framework. This thesis focuses on the NetShaper system.} \cite{sabzi2024netshaper}.
-Second, we demonstrate additional avenues that can be used to carry out side-channel attacks in interconnects and their caveats.
+Second, we demonstrate additional avenues that can be used to carry out side-channel attacks in interconnects.
 
 
 \begin{comment}

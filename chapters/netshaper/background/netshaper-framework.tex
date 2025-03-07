@@ -1,7 +1,7 @@
 \subsection{Mitigating Network Side Channels using Differential Privacy}
 \label{subsec:netshaper-background-framework}
 
-There are many different ways to add noise to the traffic and remove the correlation between the content of the traffic and the shape of the traffic.
+There are many different ways to add noise to network traffic to remove the correlation between the content of the traffic and the shape of the traffic.
 However, most approaches either have a high overhead or high latency \cite{cai2014csbuflo, mehta2022pacer} or do not provide any meaningful privacy guarantees \cite{hou2020wf, nasr2021blind, rahman2020mockingbird, shan2021dolos, wang2017walkie, wright2009traffic}.
 Here, we briefly describe the NetShaper framework that addresses all of these concerns.
 NetShaper's framework relies on Differential Privacy (DP) to mitigate network side-channel attacks.
@@ -9,9 +9,9 @@ It provides meaningful, theoretical privacy guarantees and a configurable trade-
 
 \subsubsection{Differential Privacy}
 \label{subsubsec:netshaper-background-framework-dp}
-Understanding how NetShaper employs DP to mitigate network side-channel attacks requires understanding DP.
+% Understanding how NetShaper employs DP to mitigate network side-channel attacks requires understanding DP.
 DP is a framework originally proposed by \citet{dwork2006differential} for releasing usable aggregate metrics regarding a dataset while limiting the leakage of information about individual data points in that dataset.
-In other words, DP bounds the probability of an observer being able to infer if an individual data point was used to generate the aggregate metric the observer has access to.
+In other words, DP bounds the probability of an observer being able to infer if an individual data point was used to generate the aggregate metric to which the observer has access.
 We provide the formal definition of DP in \Cref{def:dp}. 
 
 \begin{definition}[Differential privacy]
@@ -25,31 +25,31 @@ We provide the formal definition of DP in \Cref{def:dp}.
 DP has two main parameters: \\
 \textbf{$\epsilon$: } It is the value that controls the trade-off between privacy and the usefulness of the aggregate metric.
 A lower value implies that an individual data point influences the aggregate result less but also decreases the accuracy of the aggregate metric, as the metric relies less on the individual data points.
-Conversely, a higher value implies that an individual data point influences the aggregate results more and, hence, has a higher probability of an observer determining their presence or absence based on the aggregate metric.\\
+Conversely, a higher value implies that an individual data point influences the aggregate results more and, hence, has a higher probability of an observer determining their presence or absence based on the aggregate metric.
+Thus, a smaller $\epsilon$ implies more privacy.\\
 \textbf{$\delta$: } It is the probability with which a given differentially-private mechanism may fail.
 
 
-For any aggregate algorithm $A$, we can make an $(\varepsilon, \delta)-DP$ algorithm by adding some noise to the output of $A$.
+For any aggregate algorithm $A$, we can make an $(\varepsilon, \delta)-DP$ algorithm by adding noise to the output of $A$.
 There are many different mechanisms to add the noise $\eta$, but most commonly, $\eta$ is a function of $\varepsilon, \delta$ and other dataset-dependent parameters (i.e. $\eta = f(\varepsilon, \delta, ...)$).
 Mathematically, $A_{DP}(D) = A(D) + \eta$
 
-DP has two properties that can be leveraged for addressing network side-channel attacks: 
+DP has two properties that can be leveraged for mitigating network side-channel attacks: 
 \textbf{1) Post Processing:} Any further operations or processing on the output of an $(\varepsilon, \delta)-DP$ algorithm is also $(\varepsilon, \delta)-DP$.
 This condition holds true as long as the operations carried out do not involve any auxiliary knowledge of the dataset.
 \textbf{2)~Composition:} It is possible to quantify the total privacy loss when multiple queries are issued to the same $(\varepsilon, \delta)-DP$ algorithm.
 
 \subsubsection{Applying DP to network streams}
 \label{subsubsec:netshaper-background-framework-applying-dp}
-NetShaper uses DP to mitigate network side-channel attacks. 
-To achieve this, NetShaper relies on two key ideas.
+NetShaper relies on two key ideas to mitigate network side-channel attacks.
 First, NetShaper represents network traffic streams as datasets to which DP can be applied.
-A network stream $S$ can be represented as a sequence of packets $P_i^S$, where each packet has its length and the timestamp at which it was encountered, i.e. $P_i^S = (l_i^S, t_i^S)$.
+A network stream $S$ can be represented as a sequence of packets $P_i^S$, where each packet has its length and the timestamp at which it was encountered, i.e., $P_i^S = (l_i^S, t_i^S)$.
 Hence, $S$ is the dataset consisting of the traffic shape, which can be used by an attacker to carry out a side-channel attack, as outlined in \Cref{subsec:netshaper-background-network-side-channels}.
 As the network stream can potentially be long, NetShaper models the DP guarantees in windows of fixed length $W$ and can use composition to calculate the privacy loss across multiple windows.
 
-Second, NetShaper relies on a buffering queue to control the shape of the traffic visible to the attacker within each window $W$ by discretising time into $W$-sized windows.
+Second, NetShaper discretizes time into $W$-sized windows and buffers the input to control the shape of the traffic observable in each window $W$.
 At the beginning of each discrete window, NetShaper checks the size of the buffer and adds DP noise to the size to determine the amount of data to be sent out in that window ($b_{out}$).
-Hence, while the attacker was initially able to observe the shape of the traffic that might be correlated with the content, now, the attacker only observes $b_{out}$ bytes being transmitted in window $W$.
+Hence, while the attacker was initially able to observe the shape of the traffic that might be correlated with the content, now, the attacker observes only $b_{out}$ bytes being transmitted in window $W$.
 
 
 \begin{comment}
