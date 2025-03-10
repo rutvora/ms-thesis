@@ -1,0 +1,15 @@
+\subsection{Network side-channel mitigation using network middlebox}
+\label{subsec:future-work-netshaper}
+
+\paragraph{Reducing the middlebox latencies.}
+The current prototype of NetShaper relies on the Linux kernel to provide the TCP/UDP functionalities. 
+While this approach allows NetShaper to be deployed with superuser privileges, it adds to the end-to-end latency as the application data traverses the Linux kernel network stack multiple times.
+Reducing this latency is paramount for real-time applications.
+One approach to this would be to use kernel bypass mechanisms such as DPDK \cite{dpdk} and F-Stack \cite{fstack} to minimise the latency induced by the context switches between the kernel and user-space.
+
+\paragraph{Multi-threaded \textit{Prepare} phase.}
+The current implementation is limited by the design of the \textit{Prepare} thread, which requires that there is only one \textit{Prepare} thread.
+However, this creates a bottleneck when scaling to higher network bandwidths, such as 100 Gbps, as only one \textit{Prepare} thread would be available to prepare and enqueue the data to the \textit{QUIC Worker} threads.
+This issue can be alleviated by splitting the \textit{Prepare} thread further into multiple threads, each of which can enqueue the data to the \textit{QUIC Worker} for transmission.
+One needs to take care of the locks between the various \textit{Prepare} threads and \textit{QUIC Worker} threads to ensure that none of the \textit{QUIC Worker} threads starts transmitting before all of the \textit{Prepare} threads have enqueued their data.
+

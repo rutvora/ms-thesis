@@ -29,7 +29,8 @@ This is the case because the victim transfers the data using \textit{burst mode}
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=\columnwidth]{figures/interconnect-sc/store-ops/cpu_store_victim_observation.png}
-    \caption{Observing the presence of victim DMA traffic using \textit{store} instructions. The victim does $10^4$ iterations of transferring 4KB/4MB.}
+    \caption{The attacker can observe the presence of victim traffic using \textit{store} operations.
+    The attacker observes the contention for more iterations or longer duration when the victim is transferring more data.}
     \label{fig:cpu-store-victim-observation}
     % 2025-03-06_14-20
 \end{figure}

@@ -1,0 +1,22 @@
+\subsection{Side Channels in PCIe}
+\label{subsec:future-work-side-channels}
+
+\paragraph{Inferring the size of the data transfer.}
+As our work demonstrated, the size of the data transferred by the victim can affect either the latency of the delay or the duration of the delay observed by the attacker.
+The attacker can use this information to determine the size of the data being transferred by the victim.
+The size of the data transfer may help the adversary determine information about the workload the victim is running.
+For example, the victim might be training or inferring from large machine-learning models that cannot fit in the GPU's memory.
+Such models must be transferred or pre-fetched layer-by-layer from the CPU's memory.
+An adversary can observe the size of these transfers and determine the size of each layer.
+Furthermore, the duration for which the attacker does not observe any contention may correspond to the execution time of a previously fetched layer, which can depend on the layer type.
+Based on such information, the adversary can reverse engineer the architecture of the machine-learning model the victim is using.
+
+\paragraph{Side Channels in CXL.}
+As CXL uses the same physical layer as PCIe, it can also be vulnerable to similar attacks.
+Furthermore, CXL 2.0 and the versions after that support more than one host communicating with the same CXL device or endpoint \cite{cxl_2}.
+This would further aggravate the problem, as the adversary does not need to be co-located on the same machine as the victim.
+
+\paragraph{Defending against side-channels in PCIe.}
+As a future research direction, one can focus on defending such side-channel attacks in PCIe.
+As PCIe behaviour is largely dependent on the PCIe controller, software-based approaches such as NetShaper cannot be deployed.
+Another challenge is providing mitigation that either does not negatively impact the latency or has a modest latency overhead for any application.
