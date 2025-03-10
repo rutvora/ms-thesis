@@ -4,13 +4,13 @@
 \subsubsection{Trade-off between small vs large DMA transfers}
 \label{subsubsec:interconnect-sc-dma-challenges-trade-off-small-v-large-tx}
 
-Since DMA engines only provide the completion time of an entire DMA transfer, the adversary faces a trade-off when selecting the transfer size. 
+Since DMA controllers only provide the completion time of an entire DMA transfer, the adversary faces a trade-off when selecting the transfer size. 
 Small transfers enable fine-grained measurements of the presence/absence of victim traffic but are unable to saturate a non-hierarchical PCIe link. 
 In contrast, large transfers provide coarse-grained measurements but may be able to saturate a non-hierarchical PCIe link, increasing the likelihood of interfering with the victim traffic.
 To determine the appropriate transfer size, we profile the execution time and bandwidth utilisation of PCIe across different DMA transfer sizes.
 
 To perform the DMA transfers, we rely on the \textit{cudaMemcpy} function provided by Nvidia CUDA.
-We ensure that the memory on the CPU is pinned to the DRAM, and can not be swapped, as this is required by the DMA engine.
+We ensure that the memory on the CPU is pinned to the DRAM, and can not be swapped, as this is required by the DMA controller.
 We measure the DMA transfer time using \textit{cudaEventRecord}, which uses a timer from the GPU to measure the time taken by GPU operations such as \textit{cudaMemcpy}.
 
 % To perform the DMA transfers, we rely on the \textit{cudaMemcpy} function provided by Nvidia CUDA.

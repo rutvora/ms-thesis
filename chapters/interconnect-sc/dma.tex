@@ -5,10 +5,10 @@ In this section, we discuss how an adversary can use direct memory access (DMA) 
 We revisit \textbf{RQ1} to determine if an adversary can use this approach to observe the victim's traffic pattern. 
 In addition, we also provide an answer to \textbf{RQ2} by demonstrating that an adversary can, in fact, create congestion on a non-hierarchical PCIe 4.0 link.
 
-A DMA engine can generate memory addresses and initiate memory \textit{load} or \textit{store} instructions that are executed in parallel, independent of the execution units of the CPU.
-The DMA engine receives commands specifying the source and destination addresses and the size of the data to copy.
+A DMA controller can generate memory addresses and initiate memory \textit{load} or \textit{store} instructions that are executed in parallel, independent of the execution units of the CPU.
+The DMA controller receives commands specifying the source and destination addresses and the size of the data to copy.
 Once the data transfer is complete, it issues a notification of completion to the command issuer.
-As such, DMA engines like those on Nvidia GPUs provide a mechanism to measure only the completion time of the entire DMA transfer, not the completion time of individual \textit{load} or \textit{store} instructions.
+As such, DMA controllers like those on Nvidia GPUs provide a mechanism to measure only the completion time of the entire DMA transfer, not the completion time of individual \textit{load} or \textit{store} instructions.
 
 \input{chapters/interconnect-sc/dma/challenges}
 \input{chapters/interconnect-sc/dma/evaluation}

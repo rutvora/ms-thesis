@@ -54,8 +54,8 @@ MMIO enables the CPU to map some memory region of the PCIe endpoint in the CPU's
 Any process with the proper permissions can then map this memory within the process and perform normal \textit{load} or \textit{store} operations on this memory.
 However, this approach requires the execution units of the CPU to issue repeated \textit{load/store} instructions to copy data to the PCIe endpoint.
 While this method is useful for reading or writing limited content, such as small configuration parameters, to the PCIe endpoints, it is inefficient for transferring a large amount of data.
-To alleviate this, many PCIe endpoints consist of a special hardware component called a direct memory access (DMA) engine.
-The DMA engine is purpose-built to copy large chunks of contiguous data without involving the execution units of the CPU.
+To alleviate this, many PCIe endpoints consist of a special hardware component called a direct memory access (DMA) controller.
+The DMA controller is purpose-built to copy large chunks of contiguous data without involving the execution units of the CPU.
 
 For MMIO-based transactions, the load or store instructions go through the same instruction pipeline outlined in \Cref{fig:amd-core}. 
 From the Load Store Queue, they enter the I/O die shown in \Cref{fig:amd-cpu} and exit through the I/O block to the connected PCIe endpoint.
