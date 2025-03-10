@@ -16,6 +16,7 @@ We also explore if the adversary can determine this without saturating the PCIe 
 For this, we follow the same pseudo-code in \Cref{lst:timing-victim-with-dma}, but set the transfer size of the adversary to 4KB.
 As shown in \Cref{fig:dma-contention-4kb}, the adversary can still observe the presence or absence of the victim traffic.
 
+
 \begin{minipage}{\textwidth}
     \lstinputlisting[language=Python]{code/interconnect-sc/timing-victim-with-dma.py}
     \captionsetup{type=lstlisting}
@@ -47,3 +48,17 @@ As shown in \Cref{fig:dma-contention-4kb}, the adversary can still observe the p
     % 2025-03-06_17-18
 \end{figure}
 
+
+However, unlike the contention observed in \Cref{fig:cpu-store-victim-observation}, the duration of contention observed by the attacker here remains constant regardless of the transfer size.
+Hence, it remains unclear whether the contention occurs in the PCIe controller or if the observation results from the DMA controller following a round-robin-like schedule for multiple scheduled DMA transfers.
+To verify this, we run the same algorithm again where the attacker is transferring 4KB, but with the victim transferring a larger amount of data (64MB and 256MB).
+As shown in \Cref{fig:dma-contention-round-robin}, the duration for which the attacker faces a delay remains constant, but the latency the attacker observes increases when the victim transfers more data.
+These observations suggest that the contention arises from the DMA controller's round-robin-like scheduling policy, where the attacker's transfer is delayed for the duration of the victim's transfer.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\textwidth]{figures/interconnect-sc/dma/dma_contention_round_robin.png}
+    \caption{DMA contention is due to the DMA controller's round-robin-like scheduling policy}
+    \label{fig:dma-contention-round-robin}
+    % 2025-03-10_09-51
+\end{figure}
