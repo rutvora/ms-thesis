@@ -1,7 +1,7 @@
 \subsection{Using DMA operations to observe presence/absence of victim traffic on PCIe}
 \label{subsec:interconnect-sc-dma-evaluation}
 
-Now that we know that the PCIe bandwidth can be saturated with 4MB transfers, we can use this information to craft an adversary that can create congestion in the non-hierarchical PCIe link.
+Now that we know that the PCIe bandwidth can be saturated with 4MB transfers, we can use this information to craft an adversary that can create congestion in the non-hierarchical PCIe link by saturating the link.
 We use the pseudo-code outlined in \Cref{lst:timing-victim-with-dma} to achieve this.
 We assume the victim also transfers data to/from the GPU via DMA.
 
@@ -10,9 +10,9 @@ At the same time, we execute the victim, which repeatedly (for $10^3$ iterations
 As before, we synchronise the execution of the critical code sections responsible for data transfers between the victim and the adversary. 
 
 As shown in \Cref{fig:dma-contention-4mb}, the time it takes to complete the call to \textit{cudaMemcpy} increases in the presence of victim traffic and reduces once the victim stops transmitting.
-As such, an adversary can determine the presence/absence of victim traffic.
+As such, an adversary can determine the presence of victim traffic.
 
-We also explore if the adversary can determine this without saturating the PCIe bandwidth.
+Furthermore, we also evaluate if the attacker can determine the presence/absence of victim traffic without saturating the PCIe bandwidth.
 For this, we follow the same pseudo-code in \Cref{lst:timing-victim-with-dma} but set the transfer size of the adversary to 4KB.
 As shown in \Cref{fig:dma-contention-4kb}, the adversary can still observe the presence or absence of the victim traffic.
 
@@ -28,22 +28,22 @@ As shown in \Cref{fig:dma-contention-4kb}, the adversary can still observe the p
      \centering
      
      \begin{subfigure}[b]{\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figures/interconnect-sc/dma/dma_contention_4KB.png}
-        \caption{Attacker transfers 4KB}
-        \label{fig:dma-contention-4kb}
-     \end{subfigure}
-     
-     \hfill
-     
-     \begin{subfigure}[b]{\textwidth}
          \centering
         \includegraphics[width=\textwidth]{figures/interconnect-sc/dma/dma_contention_4MB.png}
         \caption{Attacker transfers 4MB}
         \label{fig:dma-contention-4mb}
      \end{subfigure}
+
+    \hfill
      
-    \caption{Observing the presence of victim DMA traffic using DMA operations. The victim does $10^3$ iterations of transferring 4KB/4MB.}
+     \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/interconnect-sc/dma/dma_contention_4KB.png}
+        \caption{Attacker transfers 4KB}
+        \label{fig:dma-contention-4kb}
+     \end{subfigure}
+
+     \caption{Observing the presence of victim DMA traffic using DMA operations. The victim does $10^3$ iterations of transferring 4KB/4MB.}
     \label{fig:dma-contention}
     % 2025-03-06_17-18
 \end{figure}

@@ -11,7 +11,8 @@ To determine the appropriate transfer size, we profile the execution time and ba
 
 To perform the DMA transfers, we rely on the \textit{cudaMemcpy} function provided by Nvidia CUDA.
 We ensure that the memory on the CPU is pinned to the DRAM and can not be swapped, as the DMA controller requires this.
-We measure the DMA transfer time using \textit{cudaEventRecord}, which uses a timer from the GPU to measure the time taken by GPU operations such as \textit{cudaMemcpy}.
+We measure the DMA transfer time using \textit{cudaEventRecord}, which uses a timer from the GPU to measure the time taken by GPU operations such as \textit{cudaMemcpy}
+\footnote{While we can follow the approach taken by LockedDown \cite{side2022lockeddown} and use the CPU-side timers such as RDTSC(P), those measurements would include the time taken by the GPU driver to send the transfer information to the DMA controller.}.
 
 % To perform the DMA transfers, we rely on the \textit{cudaMemcpy} function provided by Nvidia CUDA.
 % \textit{cudaMemcpy} accepts the source and destination addresses (at least one of which should point to some GPU memory) and the size of the data to be transferred.
@@ -26,7 +27,7 @@ We measure the DMA transfer time using \textit{cudaEventRecord}, which uses a ti
 As shown in \Cref{fig:bw-util-and-time-per-size}, the transfer time increases with the transfer size, while the transfer rate does not increase beyond 25GBps
 \footnote{While the theoretical limit of PCIe 4.0 x16 is 32GBps, the achievable transfer rate is less due to the protocol overheads \cite{neugebauer2018understanding}.},
 at a transfer size of 4MB.
-Therefore, the adversary can optimise the transfer size at 4MB to strike a balance between fine-grained measurements and saturating the PCIe bandwidth.
+Therefore, if an adversary aims to saturate the PCIe bandwidth, they can optimise the transfer size at 4MB to strike a balance between fine-grained measurements and saturating the PCIe bandwidth.
 
 \begin{figure}[!htb]
     \centering

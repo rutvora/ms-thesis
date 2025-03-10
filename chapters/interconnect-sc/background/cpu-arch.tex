@@ -26,7 +26,7 @@ The figure shows the following components:
 
 Modern CPUs rely on executing multiple instructions simultaneously to maximise performance.
 To achieve this, the CPUs have a multi-stage pipeline with the following stages: 1) Fetch, 2) Decode, 3) Schedule and Execute, and 4) Retire.
-We provide a simplified view of the pipeline in the CPU cores of the AMD EPYC Zen 3 processors in \Cref{fig:amd-core} and a brief description of each of the stages below:\\
+We provide a simplified view of the pipeline in the CPU cores of the AMD~EPYC~Zen~3 processors in \Cref{fig:amd-core} and a brief description of each of the stages below:\\
 \textbf{Fetch: } This stage fetches the next macro-op from the cache or the memory. 
 However, the next macro-op to be fetched may not be deterministic, given the program may contain branches. 
 In such cases, this stage also uses branch prediction to speculate on which instruction may be executed next and fetch that instruction.\\
