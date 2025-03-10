@@ -1,10 +1,10 @@
 \subsection{CPU Architecture}
 \label{subsec:interconnect-sc-background-cpu-arch}
 
-Modern CPUs consist of many components, such as execution units, caches, PCIe root complex, and DRAM controllers.
+Modern CPUs have many components, including execution units, caches, PCIe root complex, and DRAM controllers.
 Some subset of these components is always traversed when data is sent to or from the CPU to the PCIe endpoints.
-The behaviour of each individual component may impact how the side-channel attack is carried out.
-As such, it becomes necessary to understand all the components that may be involved in a PCIe transaction.
+The behaviour of each component may impact how the side-channel attack is carried out.
+As such, it becomes necessary to understand all the components involved in a PCIe transaction.
 
 \begin{figure}[!htb]
     \centering
@@ -34,7 +34,7 @@ In such cases, this stage also uses branch prediction to speculate on which inst
 \textbf{Schedule and Execute: } The scheduler(s) determine which instruction can be executed next based on the availability of the data that the instruction requires. 
 This ensures that a long-running instruction (e.g., where the data is unavailable) does not stall all other independent instructions that can be executed.
 As such, instructions here can be executed out of program order. 
-Once the instruction has finished execution and the output of the instruction (if any) is available in the registers, the instruction is removed from the scheduler.
+Once the instruction has finished execution and the output (if any) is available in the registers, the instruction is removed from the scheduler.
 As load and store are common but time-consuming instructions, this stage also consists of a load-store queue where pending load and store operations are held. \\
 % \footnote{In Zen 3 cores, the load/store unit has a capacity of 72 loads and 64 stores.}. \\
 \textbf{Retire: } This stage ensures that instructions are retired in the program order so that the program can remain oblivious to the out-of-order execution that occurred in the previous stage.
@@ -49,12 +49,12 @@ As load and store are common but time-consuming instructions, this stage also co
 \subsubsection{PCIe transactions to/from CPU}
 \label{subsubsec:interconnect-sc-background-cpu-arch-pcie-transactions}
 
-A program running on the CPU can transfer data to the PCIe device/endpoint in two major ways: 1) Memory operations via memory-mapped IO (MMIO) and 2) Direct memory access (DMA).
+A program running on the CPU can transfer data to the PCIe device/endpoint in two significant ways: 1) Memory operations via memory-mapped IO (MMIO) and 2) Direct memory access (DMA).
 MMIO enables the CPU to map some memory region of the PCIe endpoint in the CPU's physical address space.
 Any process with the proper permissions can then map this memory within the process and perform normal \textit{load} or \textit{store} operations on this memory.
 However, this approach requires the execution units of the CPU to issue repeated \textit{load/store} instructions to copy data to the PCIe endpoint.
-While this method is useful for reading or writing limited content, such as small configuration parameters, to the PCIe endpoints, it is inefficient for transferring a large amount of data.
-To alleviate this, many PCIe endpoints consist of a special hardware component called a direct memory access (DMA) controller.
+While this method is helpful for reading or writing limited content, such as small configuration parameters, to the PCIe endpoints, it is inefficient for transferring a large amount of data.
+To alleviate this, many PCIe endpoints have a unique hardware component called a direct memory access (DMA) controller.
 The DMA controller is purpose-built to copy large chunks of contiguous data without involving the execution units of the CPU.
 
 For MMIO-based transactions, the load or store instructions go through the same instruction pipeline outlined in \Cref{fig:amd-core}. 

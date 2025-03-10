@@ -3,7 +3,7 @@
 
 Direct memory access (DMA) enables data transfer between the CPU memory and the peripheral devices without the need to involve the execution units of the CPU.
 A DMA controller is a purpose-built hardware that massively parallelises data movement operations between the CPU memory and the peripheral devices.
-The DMA controller obtains instructions regarding the source and destination address, and size of the data to be transferred.
+The DMA controller obtains instructions regarding the data's source and destination address and size to be transferred.
 The DMA controller then takes control of the system buses required to perform this data transfer based on the configured mode of operation.
 
 \subsubsection{Modes of operation}
@@ -18,10 +18,10 @@ Peripherals such as GPUs, FPGAs or custom accelerators can use this mode to tran
 \textbf{Cycle Stealing Mode:} In this mode, the CPU maintains control of the system bus until the peripheral device is ready to transmit the data.
 Once the device is ready, the CPU transfers control of the bus to the peripheral device for one cycle.
 This mode is used when the peripheral may take a lot of time to prepare the data and the amount of data is small.
-While this approach ensures that the CPU is not blocked for a long duration, it reduces the DMA transfer rate.
+While this approach ensures that the CPU is not blocked for long, it reduces the DMA transfer rate.
 Systems that require real-time processes, such as audio processing systems, use this mode to ensure that time-critical CPU operations are blocked predictably.
 
 \textbf{Interleaving Mode:} In this mode, the CPU maintains control of the system bus and only releases it when it does not need it.
 As such, the device has to wait to perform the data transfer even when the data is prepared.
-While this approach ensures that the CPU is never blocked, it results in a very slow DMA transfer rate.
-This approach was used by older peripheral devices, such as a floppy disk controller, to lazily transfer data from the disk to the CPU DRAM.
+While this approach ensures the CPU is never blocked, it results in a very slow DMA transfer rate.
+This approach was used by older peripheral devices, such as a floppy disk controller, to transfer data from the disk to the CPU DRAM lazily.

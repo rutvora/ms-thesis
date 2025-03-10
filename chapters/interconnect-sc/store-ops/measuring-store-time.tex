@@ -1,7 +1,7 @@
 \subsection{Using \textit{store} operations to observe presence/absence of victim traffic on PCIe}
 \label{subsec:interconnect-sc-store-ops-measuring-time}
 Now, we have a mechanism to issue multiple \textit{store} instructions in parallel while timing the completion of an individual (or a small group of) \textit{store} instructions.
-We can use this mechanism along with the threshold of $N = 81$ to observe the presence or absence of victim traffic in the PCIe controller.
+We can use this mechanism and the threshold of $N = 81$ to observe the presence or absence of victim traffic in the PCIe controller.
 To achieve this, we execute the pseudo-code outlined in \Cref{lst:timing-victim-with-stores} while the victim transfers a large amount of data to or from the GPU via DMA
 \footnote{Since most GPU-based applications rely on the DMA controller for efficient transfers, we assume that the victim uses DMA.}.
 
@@ -12,9 +12,9 @@ Additionally, we synchronise the execution of the critical code sections respons
 This synchronisation allows us to measure whether we can detect the presence or absence of victim traffic, even though such perfect alignment is unrealistic for a side-channel attack.
 
 As shown in \Cref{fig:cpu-store-victim-observation}, the execution time of the individual \textit{store} operations by the adversary increases in the presence of victim traffic, irrespective of whether the victim is saturating the PCIe link or not.
-In the absence of a victim, the \textit{store} instruction takes $<15~cycles$ to complete. However, in the presence of victim traffic, the execution time increases to $>15~cycles$ and drops down again once the victim is done transmitting.
-As such, an adversary is able to determine the presence/absence of victim traffic.
-The adversary observes a fixed delay in the execution time of the \textit{store} instruction irrespective of the size being transferred.
+Without a victim, the \textit{store} instruction takes $<15~cycles$ to complete. However, in the presence of victim traffic, the execution time increases to $>15~cycles$ and drops again once the victim is done transmitting.
+As such, an adversary can determine the presence/absence of victim traffic.
+The adversary observes a fixed delay in the execution time of the \textit{store} instruction irrespective of the size of the data being transferred by the victim.
 However, the duration for which the adversary observes the delay increases with the amount of data the victim transfers.
 This is the case because the victim transfers the data using \textit{burst mode} of transfer, where the burst size is fixed.
 

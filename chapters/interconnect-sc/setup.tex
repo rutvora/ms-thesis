@@ -6,6 +6,6 @@ The server also has an Nvidia A100 GPU with 80GB HBM2e memory.
 The GPU is directly connected to the CPU in the first NUMA socket (i.e., without any PCIe switch being involved).
 
 We utilise only the CPU in the first NUMA socket for all the experiments.
-We also isolate the cores we run the experiments on from the Linux kernel and divert as many system processes and interrupts to other cores, as possible
+We also isolate the cores we run the experiments on from the Linux kernel and divert as many system processes and interrupts to other cores as possible
 \footnote{We isolate the cores using \textit{isolcpus} option during boot. We also use \textit{cpuset} and \textit{irqbalance} to move system processes and interrupt handling to cores not used for the experiment.}.
-We fix the CPU core frequencies at 2.3 GHz to ensure that our experiments are not impacted by changing core frequencies.
+We fix the CPU core frequencies at 2.3 GHz to ensure that changing core frequencies do not impact our experiments.

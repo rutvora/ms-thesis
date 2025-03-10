@@ -8,10 +8,10 @@ For example, data transmitted off-chip to memory or another NUMA node is now enc
 PCIe, which is used to communicate with peripheral devices, only introduced encryption with the PCIe 6.0 specifications 
 \footnote{PCI-SIG has released an Engineering Change Notification (ECN) to optionally enable integrity and data encryption (IDE) for PCIe 5.0 \cite{pcie_ide_v5_ecn}}
 \cite{pcie_ide_v6}.
-While the recent focus on interconnect security is on encryption, little focus has been given to network-side channel attacks on interconnects.
+While the recent focus on interconnect security is encryption, little focus has been given to network-side channel attacks on interconnects.
 
 Recent research has demonstrated that creating congestion by saturating the PCIe bandwidth can help an adversary determine the user's activity.
-However, prior work relies on PCIe 3.0 and often has a hierarchical topology where there is a shared PCIe switch or PCH.
+However, prior work relies on PCIe 3.0 and often has a hierarchical topology with a shared PCIe switch or PCH.
 In addition, they rely on the adversary's ability to saturate the PCIe bandwidth, hence creating congestion.
 
 This chapter answers two important research questions:
@@ -19,7 +19,7 @@ This chapter answers two important research questions:
 \textbf{RQ2:} Is it possible to create congestion on a non-hierarchical PCIe link in faster PCIe 4.0?
 
 The rest of the chapter is organised as follows.
-We begin by providing relevant background on PCIe, the CPU architecture we work with, and interconnect side-channels in general in \Cref{sec:interconnect-sc-background}. 
-Then, we outline our threat model and our setup in \Cref{sec:interconnect-sc-threat-model} and \Cref{sec:interconnect-sc-setup}, respectively.
+We provide relevant background on PCIe, the CPU architecture we work with, and interconnect side-channels in general in \Cref{sec:interconnect-sc-background}. 
+Then, we outline our threat model and setup in \Cref{sec:interconnect-sc-threat-model} and \Cref{sec:interconnect-sc-setup}, respectively.
 We answer the research questions outlined above in \Cref{sec:interconnect-sc-store-ops} and \Cref{sec:interconnect-sc-dma}.
 Finally, we discuss the limitations of our approach in \Cref{sec:interconnect-sc-limitations} and how our approach compares to related work in \Cref{sec:interconnect-sc-related-work}.

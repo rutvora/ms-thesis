@@ -2,18 +2,18 @@
 \label{subsec:interconnect-sc-dma-evaluation}
 
 Now that we know that the PCIe bandwidth can be saturated with 4MB transfers, we can use this information to craft an adversary that can create congestion in the non-hierarchical PCIe link.
-To achieve this, we use the pseudo-code outlined in \Cref{lst:timing-victim-with-dma}.
-We assume that the victim is also transferring data to/from the GPU via DMA.
+We use the pseudo-code outlined in \Cref{lst:timing-victim-with-dma} to achieve this.
+We assume the victim also transfers data to/from the GPU via DMA.
 
 To evaluate our ability to detect victim traffic, we run the adversary for $10^4$ iterations.
 At the same time, we execute the victim, which repeatedly (for $10^3$ iterations) performs a DMA transfer of either 4KB or 4MB
 As before, we synchronise the execution of the critical code sections responsible for data transfers between the victim and the adversary. 
 
 As shown in \Cref{fig:dma-contention-4mb}, the time it takes to complete the call to \textit{cudaMemcpy} increases in the presence of victim traffic and reduces once the victim stops transmitting.
-As such, an adversary is able to determine the presence/absence of victim traffic.
+As such, an adversary can determine the presence/absence of victim traffic.
 
 We also explore if the adversary can determine this without saturating the PCIe bandwidth.
-For this, we follow the same pseudo-code in \Cref{lst:timing-victim-with-dma}, but set the transfer size of the adversary to 4KB.
+For this, we follow the same pseudo-code in \Cref{lst:timing-victim-with-dma} but set the transfer size of the adversary to 4KB.
 As shown in \Cref{fig:dma-contention-4kb}, the adversary can still observe the presence or absence of the victim traffic.
 
 
@@ -51,8 +51,9 @@ As shown in \Cref{fig:dma-contention-4kb}, the adversary can still observe the p
 
 However, unlike the contention observed in \Cref{fig:cpu-store-victim-observation}, the duration of contention observed by the attacker here remains constant regardless of the transfer size.
 Hence, it remains unclear whether the contention occurs in the PCIe controller or if the observation results from the DMA controller following a round-robin-like schedule for multiple scheduled DMA transfers.
-To verify this, we run the same algorithm again where the attacker is transferring 4KB, but with the victim transferring a larger amount of data (64MB and 256MB).
-As shown in \Cref{fig:dma-contention-round-robin}, the duration for which the attacker faces a delay remains constant, but the latency the attacker observes increases when the victim transfers more data.
+To verify this, we rerun the same algorithm where the attacker transfers 4KB, but with the victim transferring 64MB or 256MB of data.
+As shown in \Cref{fig:dma-contention-round-robin}, the duration for which the attacker faces a delay remains constant.
+Still, the latency the attacker observes increases when the victim transfers more data.
 These observations suggest that the contention arises from the DMA controller's round-robin-like scheduling policy, where the attacker's transfer is delayed for the duration of the victim's transfer.
 
 \begin{figure}[!htb]

@@ -4,7 +4,7 @@
 
 \subsubsection{Determining the right PCIe resource and instruction combination}
 
-Of the transaction types outlined in \Cref{tab:pcie-transaction-types}, a software application can only generate configuration read and write, and memory read and write on a modern system that only has PCIe devices
+Of the transaction types outlined in \Cref{tab:pcie-transaction-types}, a software application can only generate configuration read and write and memory read and write on a modern system that only has PCIe devices
 \footnote{I/O reads and writes may be available if a legacy PCI device is attached.
 The software application does not control messages and Completions and, hence, can not be generated directly by the adversary.}.
 However, exploring only memory reads and writes as transactions an attacker can use is sufficient. 
@@ -31,7 +31,7 @@ As such, we determine that memory stores are the correct type of transaction for
     \lstinputlisting[language=Python]{code/interconnect-sc/pcie-mem-reads-v-writes.py}
     \captionsetup{type=lstlisting}
     \caption{Profiling the execution time of \textit{load/store} instruction.
-    Each \textit{load} or \textit{store} instruction is issued on a unique memory address which is more than 64 bytes from the previous address.}
+    Each \textit{load} or \textit{store} instruction is issued on a unique memory address over 64 bytes from the previous address.}
     \label{lst:pcie-mem-reads-v-writes}
 \end{minipage}
 
@@ -53,9 +53,9 @@ In addition, for tracking \textit{load} and \textit{store} operations that are i
 Suppose the total number of pending (in flight) \textit{store} instructions is larger than the total size of the scheduler slots and the store queue. 
 In that case, the next instruction will be blocked until one (or more) of the previous instructions finishes.
 \textit{Second}, as the \textit{store} instructions may be executed out of program order, the attacker needs to observe the completion of the first \textit{store} instruction that was executed and not the first one by program order.
-% As discussed in \Cref{subsec:interconnect-sc-background-cpu-arch}, each scheduler on the CPU core has a capacity of holding 24 instructions.
-% Any instruction that is not yet in the scheduler can not be executed out of order until it gets a slot in one of the schedulers.
-% We leverage this behaviour of the CPU to develop a mechanism that can issue multiple \textit{store} instructions while having the ability to time individual completions.
+% As discussed in \Cref{subsec:interconnect-sc-background-cpu-arch}, each scheduler on the CPU core can hold 24 instructions.
+% Any instruction not yet in the scheduler can not be executed out of order until it gets a slot in one of the schedulers.
+% We leverage this CPU behaviour to develop a mechanism that can issue multiple \textit{store} instructions while having the ability to time individual completions.
 
 We can use these insights to queue a \textit{timer} instruction immediately after issuing $size_{sched} + size_{stq}$ stores, and that \textit{timer} will execute only after the first \textit{store} instruction that was issued has been completed.
 To achieve this, we need to ensure that we can issue $N = 3 * size_{sched} + size_{stq}$ 
@@ -95,19 +95,19 @@ As we can see in \Cref{fig:measuring-store-time}, the measured time difference s
 
 \subsubsection{Microcode Updates}
 \label{subsubsec:interconnect-sc-store-ops-challenges-microcode-updates}
-However, the behaviour of the CPU observed in \Cref{fig:measuring-store-time} is dependent on the microcode the CPU is running.
+However, the CPU behaviour observed in \Cref{fig:measuring-store-time} depends on the microcode the CPU is running.
 The CPU microcode can change how the CPU behaves.
-For example, the microcode can change how the schedulers schedule the instructions out of order, how the LSU tracks the stores in flight, or how the write-combining buffers combine multiple \textit{store} instructions for efficient usage of the interconnects.
+For example, the microcode can change how the schedulers schedule the instructions out of order, how the LSU tracks the stores in flight, or how the write-combining buffers combine multiple \textit{store} instructions to use the interconnects efficiently.
 
 The results in \Cref{fig:measuring-store-time} are based on the microcode patch 0x0A0011D5 (for AMD EPYC 3rd gen 19h B1 processors) released on May 03, 2024 to address CVE-2023-31315 \cite{amd_microcode_update}.
-Prior to this update (i.e. microcode patch 0x0a0011d3), the results were as shown in \Cref{fig:measuring-store-time-before-microcode-update}.
+Before this update (i.e. microcode patch 0x0a0011d3), the results were as shown in \Cref{fig:measuring-store-time-before-microcode-update}.
 Here, $N = 120$, instead of $N = 80$. 
 In addition, after the threshold of $N$, the stores complete in groups of $8$ instead of retiring individually.
-This may be caused by unexpected behaviour of the write-combining (WC) buffers that are present after the LSU in the CPU pipeline.
-The usage of the WC buffers also explains the high variation in the execution time measured, as the WC buffer combines writes based on certain threshold differences between the target addresses \cite{amd_7003_software_optimization_guide}, which are dependent on the order in which the stores were issued.
-While we ensure that Linux marks the PCIe resource as a memory type that does not allow write-combining, the CPU may still be using these buffers unexpectedly.
+This may be caused by unexpected behaviour of the write-combining (WC) buffers present after the LSU in the CPU pipeline.
+The usage of the WC buffers also explains the high variation in the execution time measured, as the WC buffer combines writes based on specific threshold differences between the target addresses \cite{amd_7003_software_optimization_guide}, which are dependent on the order in which the stores were issued.
+While we ensure that Linux marks the PCIe resource as a memory type that does not allow write-combining, the CPU may still use these buffers unexpectedly.
 However, AMD does not offer changelogs for their microcode.
-Hence, we are unable to confirm what CPU behaviour changed between the given versions.
+Hence, we cannot confirm what CPU behaviour changed between the given versions.
 
 
 \begin{figure}[!htb]
