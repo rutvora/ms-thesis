@@ -20,7 +20,7 @@ As shown in \Cref{fig:dma-contention-4kb}, the adversary can still observe the p
 \begin{minipage}{\textwidth}
     \lstinputlisting[language=Python]{code/interconnect-sc/timing-victim-with-dma.py}
     \captionsetup{type=lstlisting}
-    \caption{Attacker code to detect presence of victim traffic via DMA operations}
+    \caption{Pseudo-code to detect presence of victim traffic via DMA ops}
     \label{lst:timing-victim-with-dma}
 \end{minipage}
 
@@ -48,7 +48,7 @@ As shown in \Cref{fig:dma-contention-4kb}, the adversary can still observe the p
     % 2025-03-06_17-18
 \end{figure}
 
-
+\vspace{1em}
 However, unlike the contention observed in \Cref{fig:cpu-store-victim-observation}, the duration of contention observed by the attacker here remains constant regardless of the transfer size.
 Hence, it remains unclear whether the contention occurs in the PCIe controller or if the observation results from the DMA controller following a round-robin-like schedule for multiple scheduled DMA transfers.
 To verify this, we rerun the same algorithm where the attacker transfers 4KB, but with the victim transferring 64MB or 256MB of data.

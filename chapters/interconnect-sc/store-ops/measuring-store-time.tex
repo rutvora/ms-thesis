@@ -2,7 +2,7 @@
 \label{subsec:interconnect-sc-store-ops-measuring-time}
 Now, we have a mechanism to issue multiple \textit{store} instructions in parallel while timing the completion of an individual (or a small group of) \textit{store} instructions.
 We can use this mechanism and the threshold of $N = 81$ to observe the presence or absence of victim traffic in the PCIe controller.
-To achieve this, we execute the pseudo-code outlined in \Cref{lst:timing-victim-with-stores} while the victim transfers a large amount of data to or from the GPU via DMA
+To achieve this, we execute the pseudo-code outlined in \Cref{lst:timing-victim-with-stores} with the victim transferring a large amount of data to or from the GPU via DMA
 \footnote{Since most GPU-based applications rely on the DMA controller for efficient transfers, we assume that the victim uses DMA.}.
 
 To evaluate our ability to detect victim traffic, we run the adversary for $10^5$ iterations.
@@ -19,12 +19,12 @@ However, the duration for which the adversary observes the delay increases with 
 This is the case because the victim transfers the data using \textit{burst mode} of transfer, where the burst size is fixed.
 
 
-\begin{minipage}{\textwidth}
+% \begin{minipage}{\textwidth}
     \lstinputlisting[language=Python]{code/interconnect-sc/timing-victim-with-stores.py}
     \captionsetup{type=lstlisting}
-    \caption{Attacker code to detect presence of victim traffic via \textit{store} instructions}
+    \caption{Pseudo-code to detect presence of victim traffic via \textit{store} instructions}
     \label{lst:timing-victim-with-stores}
-\end{minipage}
+% \end{minipage}
 
 \begin{figure}[!htb]
     \centering
