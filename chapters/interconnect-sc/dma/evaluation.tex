@@ -50,16 +50,16 @@ As shown in \Cref{fig:dma-contention-4kb}, the adversary can still observe the p
 
 \vspace{1em}
 However, unlike the contention observed in \Cref{fig:cpu-store-victim-observation}, the duration of contention observed by the attacker here remains constant regardless of the transfer size.
-Hence, it remains unclear whether the contention occurs in the PCIe controller or if the observation results from the DMA controller following a round-robin-like schedule for multiple scheduled DMA transfers.
+Hence, it remains unclear whether the contention occurs in the PCIe controller or if the observation results from the DMA controller following a FIFO-like schedule for multiple scheduled DMA transfers.
 To verify this, we rerun the same algorithm where the attacker transfers 4KB, but with the victim transferring 64MB or 256MB of data.
-As shown in \Cref{fig:dma-contention-round-robin}, the duration for which the attacker faces a delay remains constant.
+As shown in \Cref{fig:dma-contention-fifo}, the duration for which the attacker faces a delay remains constant.
 Still, the latency the attacker observes increases when the victim transfers more data.
-These observations suggest that the contention arises from the DMA controller's round-robin-like scheduling policy, where the attacker's transfer is delayed for the duration of the victim's transfer.
+These observations suggest that the contention arises from the DMA controller's FIFO-like scheduling policy, where the attacker's transfer is delayed for the duration of the victim's transfer.
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=\textwidth]{figures/interconnect-sc/dma/dma_contention_round_robin.png}
-    \caption{DMA contention is due to the DMA controller's round-robin-like scheduling policy}
-    \label{fig:dma-contention-round-robin}
+    \includegraphics[width=\textwidth]{figures/interconnect-sc/dma/dma_contention_fifo.png}
+    \caption{DMA contention is due to the DMA controller's FIFO-like scheduling policy}
+    \label{fig:dma-contention-fifo}
     % 2025-03-10_09-51
 \end{figure}

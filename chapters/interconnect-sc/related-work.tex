@@ -2,10 +2,18 @@
 \label{sec:interconnect-sc-related-work}
 
 Invisible Probe \cite{tan2021invisible} was the first work to study the security implications of congestion on PCIe.
-However, their approach required a hierarchical PCIe topology with a shared PCIe switch or PCH and depended on the attacker saturating the PCIe bandwidth to induce congestion on the PCIe switch or PCH.
+In their approach, the attacker creates congestion in a PCIe switch or PCH by saturating the upstream PCIe bandwidth.
+the attacker then measures the delay of their own transfers to determine what the user input is in a GUI application, which machine learning model the victim is training, or what webpage the victim is accessing.
+
 \citet{giechaskiel2022cross} follows the same approach as Invisible Probe.
 They also attempt to saturate the upstream PCIe bandwidth on a PCIe switch, thus inducing contention on the PCIe switch.
+However, their goal is distinct from Invisible Probe as the attacker here aims to determine what workload is running on an FPGA, or whether a new VM that uses the FPGA boots up on the shared cloud server.
+In addition, they also demonstrate a covert channel using this congestion.
+
 LockedDown \cite{side2022lockeddown} shares the system setup with our work, where the GPU is directly connected to the host.
 They also use the DMA controllers on the GPU to transfer data to/from the CPU and create contention.
-In contrast, our work shows that the attacker does not need to saturate the PCIe bandwidth to observe contention with the victim's traffic. 
+However, LockedDown also saturates the GPU bandwidth in order to create congestion on the PCIe interconnect.
+They use this congestion for either a covert channel or to determine which webpage the user is loading on their display.
+
+In contrast to prior work, our work demonstrates that the attacker does not need to saturate the PCIe bandwidth to observe contention with the victim's traffic. 
 Furthermore, our work establishes that contention can occur even when the combined bandwidth usage of the victim and the attacker remains below saturation.

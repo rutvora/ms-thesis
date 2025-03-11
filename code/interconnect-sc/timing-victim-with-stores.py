@@ -1,8 +1,7 @@
 ATTACKER_ITERS = 1e5  # Arbitrarily large number
 
-VICTIM_ITERS = 1e4  # One order of magnitude less than ATTACKER_ITERS
+VICTIM_ITERS = 1e4  # Order of magnitude less than ATTACKER_ITERS
 VICTIM_SIZE = 4KB  # or 4MB
-
 
 def attacker():
     res = []  # Store the observed latencies
@@ -16,7 +15,7 @@ def attacker():
     .
     store 85
     
-    # Issue a timer, which will block until a scheduler slot opens up
+    # Issue a timer, which will block until a scheduler slot opens
     # Then fill the slot again with another store instruction
     for i in range(ATTACKER_ITERS):  # Until attacker stops it
         timer = now()  # Executed out of order as soon as the scheduler slot opens up
