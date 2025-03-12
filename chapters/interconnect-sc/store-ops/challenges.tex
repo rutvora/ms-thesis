@@ -4,17 +4,18 @@
 
 \subsubsection{Determining the right PCIe resource and instruction combination}
 
-Of the transaction types outlined in \Cref{tab:pcie-transaction-types}, a software application can only generate configuration read and write and memory read and write on a modern system that only has PCIe devices
+Of the transaction types outlined in \Cref{tab:pcie-transaction-types}, a software application can generate only configuration read and write and memory read and write on a modern system that only has PCIe devices
 \footnote{I/O reads and writes may be available if a legacy PCI device is attached.
 The software application does not control messages and Completions and, hence, can not be generated directly by the adversary.}.
-However, exploring only memory reads and writes as transactions an attacker can use is sufficient. 
-Memory reads, configuration reads, and configuration writes are non-posted transactions that follow the same ordering rule and, hence, would have the same behaviour on the interconnect.
+However, as memory reads, configuration reads, and configuration writes are all non-posted transactions, they all exhibit the same behaviour.
+As such, exploring only memory reads suffices for exploring all non-posted transactions.
+Similarly, exploring memory writes as transactions that an attacker can use suffices to explore all posted transactions. 
+
 
 To profile the execution time of memory \textit{load} and \textit{store} instructions, we use a program that follows the pseudocode outlined in \Cref{lst:pcie-mem-reads-v-writes}.
 As we can see in \Cref{fig:pcie-mem-reads-v-writes}, the execution time of memory loads (and consequently, non-posted transactions) increases linearly with the number of memory loads issued.
 Each \textit{load} instruction takes about 2000 cycles, which is 625ns on a processor with a base clock of 3.2GHz.
-Most of the 625ns latency is composed of PCIe transfer time \cite{neugebauer2018understanding}.
-This is because a \textit{load} operation has to wait for a previous \textit{load} operation to complete 
+Most of the 625ns latency is composed of PCIe transfer time \cite{neugebauer2018understanding}, because a \textit{load} operation has to wait for a previous \textit{load} operation to complete 
 \footnote{While this is not enforced by PCIe ordering rules, it may be enforced by the proprietary PCIe controller implementation.}.
 Since each \textit{load} instruction must wait for the previous one to complete, the attacker cannot guarantee a packet is always ready in the PCIe controller for transmission when the victim is simultaneously transmitting.
 However, a memory store (and hence a posted transaction) does not have to wait for a previous store to complete.
@@ -22,9 +23,10 @@ As such, we determine that memory stores are the correct type of transaction for
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=0.8\columnwidth]{figures/interconnect-sc/store-ops/pcie_mem_reads_v_writes.png}
+    \includegraphics[width=\columnwidth]{figures/interconnect-sc/store-ops/pcie_mem_reads_v_writes.png}
     \caption{Comparison: PCIe memory reads vs writes}
     \label{fig:pcie-mem-reads-v-writes}
+    % 2025-03-01_15-15
 \end{figure}
 
 \begin{minipage}{\textwidth}
@@ -45,8 +47,8 @@ To fix this, the attacker needs a mechanism that can issue as many \textit{store
 
 To measure the completion time of a \textit{store} operation which is issued out-of-order, we make use of two key insights:
 
-\textit{First}, the CPU core would need to keep track of all instructions executed out-of-order so that they are retired in program order.
-Keeping this track would require a scheduler and a buffer in the hardware, which would have a limited and fixed size.
+\textit{First}, the CPU core needs to keep track of all instructions executed out-of-order so that they are retired in program order.
+Keeping track of this requires a scheduler and a buffer in the hardware, which would have a limited and fixed size.
 The AMD CPU has four schedulers as described in \Cref{subsubsec:interconnect-sc-background-cpu-arch-pipelines}. Each scheduler has a fixed number of instruction slots, $size_{sched}$
 \footnote{AMD Zen 3 schedulers have $\sim$22-24 slots per scheduler \cite{gast2023squip}.}.
 In addition, for tracking \textit{load} and \textit{store} operations that are in flight, the CPU also has a load-store queue (LSQ), with a fixed number of slots for loads ($size_{ldq} = 72$) and for stores ($size_{stq} = 64$) \cite{amd_7003_software_optimization_guide}.
@@ -65,7 +67,7 @@ As the AMD CPU can issue 2 \textit{store} instructions per cycle \cite{amd_7003_
 For $size_{sched} = 24$ and $size_{stq} = 64$, $t_{cpu} = 68~cycles$.
 % \footnote{Hence, if $size_{sched} = 24$, $N = 3 * 24 + 64 = 136$, and $t_{cpu} = N/2 = 68~cycles$.}.
 
-Now, after the initial $N$ stores, if we issue a continuous stream of (\textit{timer}...\textit{store}) pairs, the \textit{timer} from the pair will only be executed once a previous \textit{store} retires.
+Now, after the initial $N$ stores, if we issue a continuous stream of (\textit{timer}...\textit{store}) pairs, the \textit{timer} from the pair will be executed only after a previous \textit{store} retires.
 As this \textit{timer} instruction will be executed immediately (out of order with the other stores), the \textit{store} in this pair will almost immediately occupy the now available scheduler slot, blocking the next \textit{timer}.
 Thus, the difference in the results of the two \textit{timer} instructions reflects the variation in retirement times of consecutive \textit{store} instructions.
 As the retirement times of the \textit{store} instructions are impacted by the PCIe transaction time, the attacker can use this mechanism to determine the presence or absence of victim traffic on PCIe.

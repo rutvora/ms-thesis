@@ -1,9 +1,9 @@
 % \section{Introduction}
 % \label{sec:interconnect-sc-introduction}
 
-Interconnects facilitate high-speed and low-latency communication within and between processing units, memory, and peripheral devices like the GPU.
+Interconnects facilitate high-speed and low-latency communication within and between processing units, memory, and peripheral devices such as GPUs.
 While the evolution of interconnects has prioritised speed and latency, security has received less attention.
-On-chip interconnects do not have any encryption even today, while off-chip interconnects have only recently started focusing on encrypting the data in transit.
+On-chip interconnects do not have any encryption even today, while off-chip interconnects have only recently started focusing on encrypting data in transit.
 For example, data transmitted off-chip to memory or another NUMA node is now encrypted when the user is using Intel's SGX/TDX or has AMD's SME or SEV enabled \cite{intel_upi_encryption, amd_gen_5_arch}.
 PCIe, which is used to communicate with peripheral devices, only introduced encryption with the PCIe 6.0 specifications 
 \footnote{PCI-SIG has released an Engineering Change Notification (ECN) to optionally enable integrity and data encryption (IDE) for PCIe 5.0 \cite{pcie_ide_v5_ecn}}

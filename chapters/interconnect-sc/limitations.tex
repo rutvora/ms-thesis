@@ -2,11 +2,11 @@
 \label{sec:interconnect-sc-limitations}
 
 Our work has two limitations.
-First, in order to carry out a side-channel attack using \textit{store} operations (as outlined in \Cref{sec:interconnect-sc-store-ops}), the attacker requires superuser privileges.
+First, to carry out a side-channel attack using \textit{store} operations (as outlined in \Cref{sec:interconnect-sc-store-ops}), the attacker requires superuser privileges.
 The privileges are required as the attacker needs to map a PCIe resource, which is only available to the root user.
-However, it is reasonable to assume that the attacker has these privileges inside their own environment, such as the virtual machine they are running on.
+However, it is reasonable to assume that the attacker has these privileges inside their own environment, such as the virtual machine on which they are running.
 Second, our DMA-based contention mechanism is currently dependent on the FIFO-like scheduling policy that the current DMA controller on the Nvidia A100 GPU currently enforces.
-As such, if this policy changes in future GPUs, it is unclear whether the same mechanism would work to observe contention.
+As such, if this policy changes in future GPUs, it is unclear whether the same mechanism will work to observe contention.
 
 In addition, the discussion regarding the behaviour of various hardware components is based on a hypothesis made from the observed behaviour.
 It is not possible for us to verify the correctness of our hypothesis as the systems discussed here are proprietary and do not have available public information to verify our conclusions.

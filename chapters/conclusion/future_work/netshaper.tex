@@ -2,10 +2,10 @@
 \label{subsec:future-work-netshaper}
 
 \paragraph{Reducing the middlebox latencies.}
-The current prototype of NetShaper relies on the Linux kernel to provide the TCP/UDP functionalities. 
+The current prototype of NetShaper relies on the Linux kernel to provide TCP/UDP. 
 While this approach allows NetShaper to be deployed with superuser privileges, it adds to the end-to-end latency as the application data traverses the Linux kernel network stack multiple times.
 Reducing this latency is paramount for real-time applications.
-One approach to this would be to use kernel bypass mechanisms such as DPDK \cite{dpdk} and F-Stack \cite{fstack} to minimise the latency induced by the context switches between the kernel and user-space.
+One approach to this would be to use kernel bypass mechanisms such as DPDK \cite{dpdk} and F-Stack \cite{fstack} to reduce the latency induced by the context switches between the kernel and user-space.
 
 \paragraph{Multi-threaded \textit{Prepare} phase.}
 The current implementation is limited by the design of the \textit{Prepare} thread, which requires that there is only one \textit{Prepare} thread.

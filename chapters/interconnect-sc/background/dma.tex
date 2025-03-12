@@ -21,7 +21,7 @@ This mode is used when the peripheral may take a lot of time to prepare the data
 While this approach ensures that the CPU is not blocked for long, it reduces the DMA transfer rate.
 Systems that require real-time processes, such as audio processing systems, use this mode to ensure that time-critical CPU operations are blocked predictably.
 
-\textbf{Interleaving Mode:} In this mode, the CPU maintains control of the system bus and only releases it when it does not need it.
+\textbf{Interleaving Mode:} In this mode, the CPU maintains control of the system bus and releases it only when it does not need it.
 As such, the device has to wait to perform the data transfer even when the data is prepared.
 While this approach ensures the CPU is never blocked, it results in a very slow DMA transfer rate.
 This approach was used by older peripheral devices, such as a floppy disk controller, to transfer data from the disk to the CPU DRAM lazily.
