@@ -1,5 +1,4 @@
 ATTACKER_ITERS = 1e5  # Arbitrarily large number
-
 VICTIM_ITERS = 1e4  # Order of magnitude less than ATTACKER_ITERS
 VICTIM_SIZE = 4KB  # or 4MB
 
@@ -18,7 +17,7 @@ def attacker():
     # Issue a timer, which will block until a scheduler slot opens
     # Then fill the slot again with another store instruction
     for i in range(ATTACKER_ITERS):  # Until attacker stops it
-        timer = now()  # Executed out of order as soon as the scheduler slot opens up
+        timer = now()  # Executed out of order when slot available
         res.append(timer - old_timer)
         old_timer = timer
         store # Fill the scheduler slot again
