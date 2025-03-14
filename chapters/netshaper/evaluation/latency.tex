@@ -13,6 +13,8 @@ The high variance in the latency is caused by the window $W$, as the request tha
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=\columnwidth]{figures/netshaper/evaluation/http_latency.png}
-    \caption{Latency vs $W$}
+    \caption{Latency vs $W$. The baseline has only measurement as it does not have $W$, which is a parameter for NetShaper.
+    NetShaper's latency increases with $W$.
+    The variation in latency (shaded region) is due to the varying arrival time of requests or responses within $W$.}
     \label{fig:netshaper-eval-http-latency}
 \end{figure}

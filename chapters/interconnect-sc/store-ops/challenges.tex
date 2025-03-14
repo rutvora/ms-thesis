@@ -18,24 +18,27 @@ Each \textit{load} instruction takes about 2000 cycles, which is 625ns on a proc
 Most of the 625ns latency is composed of PCIe transfer time \cite{neugebauer2018understanding}, because a \textit{load} operation has to wait for a previous \textit{load} operation to complete 
 \footnote{While this is not enforced by PCIe ordering rules, it may be enforced by the proprietary PCIe controller implementation.}.
 Since each \textit{load} instruction must wait for the previous one to complete, the attacker cannot guarantee a packet is always ready in the PCIe controller for transmission when the victim is simultaneously transmitting.
-However, a memory store (and hence a posted transaction) does not have to wait for a previous store to complete.
+However, a memory store does not have to wait for a previous store to complete.
 As such, we determine that memory stores are the correct type of transaction for the attacker.
 
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[width=\columnwidth]{figures/interconnect-sc/store-ops/pcie_mem_reads_v_writes.png}
-    \caption{Comparison: PCIe memory reads vs writes}
-    \label{fig:pcie-mem-reads-v-writes}
-    % 2025-03-01_15-15
-\end{figure}
 
 \begin{minipage}{\textwidth}
     \lstinputlisting[language=Python]{code/interconnect-sc/pcie-mem-reads-v-writes.py}
     \captionsetup{type=lstlisting}
     \caption{Profiling the execution time of \textit{load/store} instruction.
-    Each \textit{load} or \textit{store} instruction is issued on a unique memory address over 64 bytes from the previous address.}
+    Each instruction reads/writes 8 bytes and is issued on a memory address at an offset of 64 bytes from the previous address.}
     \label{lst:pcie-mem-reads-v-writes}
 \end{minipage}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{figures/interconnect-sc/store-ops/pcie_mem_reads_v_writes.png}
+    \caption{Comparison: PCIe memory reads vs writes.
+    The time is for completing all \textit{N} loads and stores.
+    Each load needs to wait for the previous load to complete, but stores can be issued in parallel.}
+    \label{fig:pcie-mem-reads-v-writes}
+    % 2025-03-01_15-15
+\end{figure}
 
 \subsubsection{Issuing and timing a continuous stream of \textit{store} instructions}
 \label{subsubsec:interconnect-sc-store-ops-challenges-measuring-time}
@@ -65,6 +68,7 @@ To achieve this, we need to ensure that we can issue $N = 3 * size_{sched} + siz
 \textit{store} instructions in $t_{cpu} < 600~cycles$ (see \Cref{fig:pcie-mem-reads-v-writes}), to ensure that the CPU pipeline is filled before the first \textit{store} instruction retires.
 As the AMD CPU can issue 2 \textit{store} instructions per cycle \cite{amd_7003_software_optimization_guide}, $t_{cpu} = N/2$.
 For $size_{sched} = 24$ and $size_{stq} = 64$, $t_{cpu} = 68~cycles$.
+As such, $t_{cpu}$ is well below the time taken for one store to complete and, hence, is sufficient to keep the CPU pipeline full.
 % \footnote{Hence, if $size_{sched} = 24$, $N = 3 * 24 + 64 = 136$, and $t_{cpu} = N/2 = 68~cycles$.}.
 
 Now, after the initial $N$ stores, if we issue a continuous stream of (\textit{timer}...\textit{store}) pairs, the \textit{timer} from the pair will be executed only after a previous \textit{store} retires.
@@ -79,13 +83,6 @@ As we can see in \Cref{fig:measuring-store-time}, the measured time difference s
 % While the AMD CPU has a write-combining buffer immediately after the LSU, we explicitly rely on a PCIe resource marked as non-write-combining by Linux, which should prevent the hardware from relying on this buffer.
 
 
-\begin{minipage}{\textwidth}
-\lstinputlisting[language=Python]{code/interconnect-sc/measuring-time.py}
-\captionsetup{type=lstlisting}
-\caption{Pseudo-code for measuring time of individual stores while issuing multiple stores in parallel}
-\label{lst:measuring-time}
-\end{minipage}
-
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=\columnwidth]{figures/interconnect-sc/store-ops/measuring_store_time.png}
@@ -94,6 +91,13 @@ As we can see in \Cref{fig:measuring-store-time}, the measured time difference s
     \label{fig:measuring-store-time}
     % 2025-03-04_15-28
 \end{figure}
+
+\begin{minipage}{\textwidth}
+\lstinputlisting[language=Python]{code/interconnect-sc/measuring-time.py}
+\captionsetup{type=lstlisting}
+\caption{Pseudo-code for measuring time of individual stores while issuing multiple stores in parallel}
+\label{lst:measuring-time}
+\end{minipage}
 
 \subsubsection{Microcode Updates}
 \label{subsubsec:interconnect-sc-store-ops-challenges-microcode-updates}

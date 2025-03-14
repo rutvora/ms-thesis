@@ -16,7 +16,7 @@ As such, it becomes necessary to understand all the components involved in a PCI
 
 \Cref{fig:amd-cpu} shows a high-level overview of the architecture of the AMD EPYC Zen 3 processors.
 The figure shows the following components:
-\textbf{1) I/O:} The component that handles input-output from the peripheral devices. This is where PCIe communication happens.
+\textbf{1) I/O:} The component that handles input-output from the peripheral devices. This is where the PCIe controller resides.
 \textbf{2) UMC:} The Unified Memory Controller is the controller that communicates with DRAM.
 \textbf{3) CCD:} The Core Complex Dies are where the cores (execution units) and caches reside.
 \textbf{4) Infinity Fabric ($\infty$):} The interconnect that connects all of the components within the AMD CPU.
@@ -33,9 +33,10 @@ In such cases, this stage also uses branch prediction to speculate on which inst
 \textbf{Decode: } This stage decomposes the fetched macro-op into the proper set of micro-operations, which are then forwarded to the next stages.\\
 \textbf{Schedule and Execute: } The scheduler(s) determine which instruction can be executed next based on the availability of the data that the instruction requires. 
 This ensures that a long-running instruction (e.g., where the data is unavailable) does not stall all other independent instructions that can be executed.
-As such, instructions here can be executed out of program order. 
+As such, instructions here can be executed out of program order
+\footnote{However, they will be retired in the program order by the retire control unit (RCU).}. 
 Once the instruction has finished execution and the output (if any) is available in the registers, the instruction is removed from the scheduler.
-As load and store are common but time-consuming instructions, this stage also consists of a load-store queue where pending load and store operations are held. \\
+As load and store are common time-consuming instructions, this stage also consists of a load-store queue where pending load and store operations are held. \\
 % \footnote{In Zen 3 cores, the load/store unit has a capacity of 72 loads and 64 stores.}. \\
 \textbf{Retire: } This stage ensures that instructions are completed in the program order so that the program can remain oblivious to the out-of-order execution that occurred in the previous stage.
 
@@ -53,6 +54,7 @@ A program running on the CPU can transfer data to the PCIe device/endpoint in tw
 MMIO enables the CPU to map some memory region of the PCIe endpoint in the CPU's physical address space.
 Any process with the proper permissions can then map this memory within the process and perform normal \textit{load} or \textit{store} operations on this memory.
 However, this approach requires the execution units of the CPU to issue repeated \textit{load/store} instructions to copy data to the PCIe endpoint.
+Each \textit{load/store} can be a maximum of 8 bytes (or 16 bytes with the use of AVX instructions), making this approach very limited in terms of throughput.
 While this method is helpful for reading or writing limited content, such as small configuration parameters, to the PCIe endpoints, it is inefficient for transferring a large amount of data.
 To alleviate this, many PCIe endpoints have a unique hardware component called a direct memory access (DMA) controller.
 The DMA controller is purpose-built to copy large chunks of contiguous data without involving the execution units of the CPU.

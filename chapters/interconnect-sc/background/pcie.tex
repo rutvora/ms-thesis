@@ -1,7 +1,7 @@
 \subsection{PCIe}
 \label{subsec:interconnect-sc-background-pcie}
 
-Peripheral component interconnect express (PCIe) is a high-speed, low-latency packet-based communication protocol that connects peripherals such as GPUs, FPGAs, storage devices, and networking devices to the CPU. 
+Peripheral component interconnect express (PCIe) is a high-bandwidth, low-latency packet-based communication protocol that connects peripherals such as GPUs, FPGAs, storage devices, and networking devices to the CPU. 
 To support high bandwidth and low latency, PCIe supports multiple lanes, where each lane can send data in both directions.
 Most PCIe implementations support 1, 2, 4, 8, or 16 lanes, represented as PCIe x1 - x16
 \footnote{PCIe x32 exists but is rarely used in commercial systems.}.
@@ -10,7 +10,7 @@ The PCIe standard has evolved through multiple generations, each offering increa
 Each major revision of the PCIe standard doubles the bandwidth supported by PCIe.
 As such, while PCIe 3.0 x16 supports 16 Gbps, PCIe 4.0 x16 doubles it to 32 Gbps, and PCIe 5.0 doubles it further to 64 Gbps.
 While PCIe 6.0 continues this trend, it also adds many newer features, such as 256B FLIT mode, ensuring that each packet is exactly 256 bytes, allowing for deterministic processing and Forward Error Correction (FEC).
-PCIe 6.0 also introduces data encryption for data in transit on the PCIe interconnect
+PCIe 6.0 also introduces data encryption for data in transit on the interconnect
 \footnote{Very few PCIe 5.0 devices are currently available in the market, and PCIe 6.0 is unavailable}.
 
 As the PCIe protocol enables communication between the CPU and peripherals, it requires hardware support from the CPU in the form of the CPU's PCIe root complex.
@@ -26,9 +26,10 @@ A PCH is usually integrated within the CPU and provides PCIe access to slower en
     \label{fig:pcie-controller}
 \end{figure}
 
-Like network protocols, PCIe uses a layered architecture consisting of the transaction, data link, and physical layers, which are implemented in a PCIe controller (see \Cref{fig:pcie-controller}).
+Like Internet protocols, PCIe uses a layered architecture consisting of the transaction, data link, and physical layers, which are implemented in a PCIe controller (see \Cref{fig:pcie-controller}).
 PCIe provides reliable transfer semantics in the data link layer, which relies on cyclic redundancy check (CRC) to detect errors and uses acknowledgements (ACKs) or negative acknowledgements (NACKs) to inform the sender to re-transmit failed packets.
-The transaction layer of PCIe supports a fixed set of transactions (see \Cref{tab:pcie-transaction-types}), each of which is one of the following three types:
+The transaction layer consists of a fixed set of PCIe operations \footnote{PCIe operations are distinct from CPU instructions/operations and DMA operations.
+A DMA or CPU instruction may result in multiple PCIe transactions.} (see \Cref{tab:pcie-transaction-types}), each of which is one of the following three types:
 \textbf{Posted:} Transactions where no response is issued or expected. 
 \textbf{Non-posted:} Transactions where a response is required. 
 \textbf{Completions:} The response of a previous non-posted transaction.

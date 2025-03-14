@@ -5,9 +5,11 @@ We assume that a victim is transmitting data over PCIe to a PCIe endpoint device
 The attacker's goal is to infer details about the data transferred over this PCIe link.
 We assume that the attacker and the victim are co-located on the same physical server, as two processes or two VMs, and have access to the same PCIe endpoint device.
 However, on the CPU side, the attacker is isolated from the victim, such that the attacker and the victim do not share cores, memory controllers or DRAM.
-On the PCIe endpoint device side, the attacker is also isolated from the victim using static partitioning such as that offered by Nvidia's Multi-Instance GPU (MIG) functionality \cite{nvidia_mig_guide}.
-As such, the only shared component between the attacker and the victim is the communication pathway from the cores to the PCIe endpoint device, which consists of the PCIe root complex on the CPU, the PCIe controller on the endpoint device, and the PCIe link connecting the two.
+On the PCIe endpoint (device) side, the attacker is also isolated from the victim using static partitioning such as that offered by Nvidia's Multi-Instance GPU (MIG) functionality \cite{nvidia_mig_guide}.
+As such, the only shared component between the attacker and the victim is the communication pathway from the cores to the PCIe endpoint (device), which consists of the PCIe root complex on the CPU, the PCIe controller on the endpoint, the PCIe link connecting the two, and the DMA controller on the endpoint.
 
 We assume that the attacker is a regular tenant application on the shared physical server and does not possess the ability to modify or compromise the underlying isolation mechanism (such as the hypervisor).
 As such, the attacker cannot infiltrate or affect the victim's program and its execution.
 In addition, the attacker cannot modify the behaviour of the underlying hardware or directly monitor any hardware components.
+However, the attacker is able to access CPU timing mechanisms such as \textit{rdtsc(p)} and \textit{rdpru}.
+They are also able to access GPU timing mechanisms using \textit{cudaEventRecord}.

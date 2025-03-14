@@ -10,6 +10,6 @@ One approach to this would be to use kernel bypass mechanisms such as DPDK \cite
 \paragraph{Multi-threaded \textit{Prepare} phase.}
 The current implementation is limited by the design of the \textit{Prepare} thread, which requires that there is only one \textit{Prepare} thread.
 However, this creates a bottleneck when scaling to higher network bandwidths, such as 100 Gbps, as only one \textit{Prepare} thread would be available to prepare and enqueue the data to the \textit{QUIC Worker} threads.
-This issue can be alleviated by splitting the \textit{Prepare} thread further into multiple threads, each of which can enqueue the data to the \textit{QUIC Worker} for transmission.
+This issue can be alleviated by replicating the \textit{Prepare} thread further into multiple threads, each of which can enqueue the data to the \textit{QUIC Worker} for transmission.
 One needs to take care of the locks between the various \textit{Prepare} threads and \textit{QUIC Worker} threads to ensure that none of the \textit{QUIC Worker} threads starts transmitting before all of the \textit{Prepare} threads have enqueued their data.
 

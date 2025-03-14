@@ -5,20 +5,15 @@ VICTIM_SIZE = 4KB  # or 4MB
 def attacker():
     res = []  # Store the observed latencies
     timer = old_timer = now()
-    
-    # Issue 85 stores
-    # 85 is an arbitrary number larger than N = 81
+    # Issue 85 (> 81) stores
     store 1
-    .
-    .
-    .
+    ...
     store 85
-    
     # Issue a timer, which will block until a scheduler slot opens
     # Then fill the slot again with another store instruction
     for i in range(ATTACKER_ITERS):  # Until attacker stops it
         timer = now()  # Executed out of order when slot available
-        res.append(timer - old_timer)
+        res.append(now() - old_timer)
         old_timer = timer
         store # Fill the scheduler slot again
 

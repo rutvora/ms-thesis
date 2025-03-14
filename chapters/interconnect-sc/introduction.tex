@@ -1,7 +1,7 @@
 % \section{Introduction}
 % \label{sec:interconnect-sc-introduction}
 
-Interconnects facilitate high-speed and low-latency communication within and between processing units, memory, and peripheral devices such as GPUs.
+Interconnects facilitate high-bandwidth and low-latency communication within and between processing units, memory, and peripheral devices such as GPUs.
 While the evolution of interconnects has prioritised speed and latency, security has received less attention.
 On-chip interconnects do not have any encryption even today, while off-chip interconnects have only recently started focusing on encrypting data in transit.
 For example, data transmitted off-chip to memory or another NUMA node is now encrypted when the user is using Intel's SGX/TDX or has AMD's SME or SEV enabled \cite{intel_upi_encryption, amd_gen_5_arch}.
@@ -12,11 +12,11 @@ While the recent focus on interconnect security is encryption, little focus has 
 
 Recent research has demonstrated that creating congestion by saturating the PCIe bandwidth can help an adversary determine the user's activity \cite{tan2021invisible, giechaskiel2022cross, side2022lockeddown}.
 However, prior work \cite{tan2021invisible, giechaskiel2022cross, side2022lockeddown} relies on PCIe 3.0 and often has a hierarchical topology with a shared PCIe switch or PCH.
-In addition, they rely on the adversary's ability to saturate the PCIe bandwidth, hence creating congestion.
+In addition, they rely on creating contention solely by saturating the PCIe bandwidth and, hence, creating congestion in the shared PCIe switch or PCH.
 
 This chapter answers two important research questions:
 \textbf{RQ1:} Is it possible to create contention in PCIe links without the adversary saturating the PCIe bandwidth?
-\textbf{RQ2:} Is it possible to create congestion on a non-hierarchical PCIe link in faster PCIe 4.0?
+\textbf{RQ2:} Is it possible to create congestion and subsequently contention on a non-hierarchical PCIe link in faster PCIe 4.0?
 
 The rest of the chapter is organised as follows.
 We provide relevant background on PCIe, the CPU architecture we work with, and interconnect side-channels in general in \Cref{sec:interconnect-sc-background}. 

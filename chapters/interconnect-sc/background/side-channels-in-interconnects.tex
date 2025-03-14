@@ -6,17 +6,21 @@ The attacker creates congestion on a buffer in the communication path between th
 The attacker then observes the delay in transmitting their traffic.
 This delay will be proportional to the data the victim transfers, which would help the attacker gain insight into the victim's traffic shape.
 
-However, a few differences between interconnects and traditional networks make it challenging to implement such an attack. \\
+However, a few differences between interconnects and traditional networks make it challenging to implement such an attack in interconnects.
+
 First, the bandwidth of interconnects such as PCIe are at least an order of magnitude higher than that of internet networks.
 While a typical bandwidth in an internet network is between 0.125 - 1.25 GBps 
 \footnote{Internet network bandwidth is typically measured in bits per second, while for interconnects, it is measured in bytes per second. Typical internet bandwidth is 1-10 Gbits per second.},
 PCIe 4.0 can operate at a rate of 32GBps.
-The high bandwidth makes it difficult to saturate the PCIe link. \\
+The high bandwidth makes it difficult to saturate the PCIe link.
+
 Second, latency in PCIe is at least three orders of magnitude smaller than that of internet networks.
 Typically, internet latency is measured in milliseconds, while PCIe latency is measured in hundreds of nanoseconds to microseconds.
-The low latency makes it difficult for the attacker to measure the delays accurately. \\
+The low latency makes it difficult for the attacker to measure the delays accurately.
+
 Third, unlike internet networks, PCIe does not extend outside the machine of the host CPU.
-This further adds to the challenge that the attacker needs to co-locate with the victim application on the same machine. \\
+This further adds to the challenge that the attacker needs to co-locate with the victim application on the same machine.
+
 Fourth, the PCIe protocol has a fixed behaviour depending on the type of transaction.
 The attacker can not craft their own packets and can not change how the hardware issues the PCIe transactions.
 % Most transaction types can not generate enough traffic to even come close to saturating the bandwidth of PCIe. 

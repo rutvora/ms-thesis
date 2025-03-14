@@ -44,6 +44,16 @@ It then adds noise to this available size based on the DP parameters.
 Finally, it enqueues the payload and padding that need to be transmitted.
 The \textit{QUIC worker} transmits the enqueued data out to the network.
 It also processes the received data, places it in the relevant LQ, and updates the FlowMap.
+
+We outline how the end hosts connect to NetShaper in \Cref{fig:netshaper-schematic}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/netshaper/netshaper-schematic.png}
+    \caption{The end host applications connect to the UShaper, while the middleboxes communicate via the QUIC worker.}
+    \label{fig:netshaper-schematic}
+\end{figure}
+
 % We have implemented \textit{DShaper} in 1800 lines of C++ code
 % \footnote{\label{footnote:msquic-loc} Both \textit{UShaper} and \textit{DShaper} consist of the MSQUIC implementation of QUIC, which is 180k lines of code, and is a part of NetShaper's TCB.}.
 
@@ -74,6 +84,10 @@ We empirically profile the time taken by the \textit{Prepare} thread for $T_{pre
 We outline the pseudo-code for both the \textit{Prepare} and the \textit{QUIC worker} threads in \Cref{lst:prepare_and_worker}.
 \vspace{1em}
 
+To ensure further isolation, the \textit{Prepare} and \textit{QUIC worker} threads each run on separate physical cores.
+\textit{UShaper} runs on a yet different core to ensure that the sending and receiving of unshaped, secret-dependent data does not affect the execution time of either of the \textit{DShaper} threads.
+We assume that QUIC's encryption and decryption time correlates only with the shaped buffer's size, not its content.
+
 \begin{minipage}{\textwidth}
 \lstinputlisting[language=Python]{code/netshaper/prepare_and_worker.py}
 \captionsetup{type=lstlisting}
@@ -82,7 +96,3 @@ We outline the pseudo-code for both the \textit{Prepare} and the \textit{QUIC wo
 \end{minipage}
 
 \vspace{1em}
-
-To ensure further isolation, the \textit{Prepare} and \textit{QUIC worker} threads each run on separate physical cores.
-\textit{UShaper} runs on a yet different core to ensure that the sending and receiving of unshaped, secret-dependent data does not affect the execution time of either of the \textit{DShaper} threads.
-We assume that QUIC's encryption and decryption time correlates only with the shaped buffer's size, not its content.
