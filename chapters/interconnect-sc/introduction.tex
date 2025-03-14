@@ -10,8 +10,8 @@ PCIe, which is used to communicate with peripheral devices, only introduced encr
 \cite{pcie_ide_v6}.
 While the recent focus on interconnect security is encryption, little focus has been given to network-side channel attacks on interconnects.
 
-Recent research has demonstrated that creating congestion by saturating the PCIe bandwidth can help an adversary determine the user's activity.
-However, prior work relies on PCIe 3.0 and often has a hierarchical topology with a shared PCIe switch or PCH.
+Recent research has demonstrated that creating congestion by saturating the PCIe bandwidth can help an adversary determine the user's activity \cite{tan2021invisible, giechaskiel2022cross, side2022lockeddown}.
+However, prior work \cite{tan2021invisible, giechaskiel2022cross, side2022lockeddown} relies on PCIe 3.0 and often has a hierarchical topology with a shared PCIe switch or PCH.
 In addition, they rely on the adversary's ability to saturate the PCIe bandwidth, hence creating congestion.
 
 This chapter answers two important research questions:

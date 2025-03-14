@@ -2,11 +2,11 @@
 \label{sec:netshaper-related-work}
 
 While prior work has explored various approaches for mitigating network side-channel attacks, most focus on conceptual methods, with only a few providing a practical system to address the issue.
-CS-BuFLO \cite{cai2014csbuflo} applies traffic shaping by transmitting a fixed number of bytes at a semi-regular intervals, while remaining receptive to congestion control.
+CS-BuFLO \cite{cai2014csbuflo} applies traffic shaping by transmitting a fixed number of bytes at semi-regular intervals while remaining receptive to congestion control.
 DeltaShaper \cite{barradas2017deltashaper} obfuscates the traffic shape to always look like a video conference stream.
 It transcodes the application traffic as a video stream that is then fed to Skype with a virtual camera.
-While both the implementations require modifications to the end-hosts, their approach can conceptually be implemented as a middlebox.
-However, their approach is not adaptive to the application traffic, hence, can result in either high bandwidth overhead or high latency.
+While both implementations require modifications to the end hosts, their approach can conceptually be implemented as a middlebox.
+However, their approach is not adaptive to the application traffic and, hence, can result in either high bandwidth overhead or high latency.
 In addition, DeltaShaper is also unable to support more than one application stream at a time.
 HTTPOS \cite{luo2011httpos}, ALPaCA and LLaMA \cite{cherubin2017llama}, and Walkie-Talkie \cite{wang2017walkie} all require modification of the end-hosts and support only HTTP applications.
 

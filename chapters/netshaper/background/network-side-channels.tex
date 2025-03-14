@@ -15,7 +15,7 @@ In a typical attack, the attacker:
 First, the attacker builds a collection of the content (e.g., webpages and video streams) in which they are interested. 
 They interact with the server(s) as a client and collect network traces for this content under various network conditions to account for variability caused by the network itself. 
 Then, the attacker trains a classifier on this collected network trace.
-The classifier can use multiple features such as packet sizes, inter-packer timing, total bytes transferred in a burst of packets, the duration of the burst and the interval between bursts, and the direction of the bursts \cite{schuster2017beautyburst}.
+The classifier can use multiple features such as packet sizes, inter-packet timing, total bytes transferred in a burst of packets, the duration of the burst and the interval between bursts, and the direction of the bursts \cite{schuster2017beautyburst}.
 
 Now, to carry out the attack, the attacker gains access to some network path shared with the victim.
 The attacker could own a router or switch on the victim's network path or another machine that shares the same router or switch to which the victim is connected.

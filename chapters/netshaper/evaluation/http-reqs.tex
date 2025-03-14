@@ -9,7 +9,7 @@ We increase the request rate until the response rate is less than the request ra
 As we can see in \Cref{fig:netshaper-eval-http-reqs}, the client achieves 470k req/s without NetShaper.
 However, increasing the request rate beyond 350k req/s negatively impacts the latency experienced by the clients, and the latency rises from less than 1ms to more than 1000ms (see \Cref{fig:netshaper-eval-http-reqs-latency}).
 As such, we determine that the server is saturated at around 350k req/s.
-NetShaper maintains the 350k req/s rate, and even achieve slightly more at 380k req/s.
+NetShaper maintains the 350k req/s rate and even achieves slightly more at 380k req/s.
 However, at 380k req/s, the \textit{QUIC worker} thread saturates and consumes 100\% of the CPU, thus not being able to achieve higher throughput.
 
 
